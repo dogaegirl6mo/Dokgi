@@ -1,15 +1,6 @@
 {
-  "originHash" : "9b6241676e809292aca04b97a02944f0f14e3c8e9a2d89ead3898eb2ff64be70",
+  "originHash" : "f35b156655e1a6ce466f301b50643d4c03f950fc4e423855ec5621870ca073a4",
   "pins" : [
-    {
-      "identity" : "bettersegmentedcontrol",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/gmarm/BetterSegmentedControl",
-      "state" : {
-        "revision" : "a2b2116761f71320cee7e69b4249863f0f372c71",
-        "version" : "2.0.1"
-      }
-    },
     {
       "identity" : "iqkeyboardmanager",
       "kind" : "remoteSourceControl",
