@@ -16,7 +16,7 @@ class AddPassageViewModel {
     var selectedBook: Item?
     var images: [UIImage] = []
     var keywords: [String] = []
-    var pageType: Bool = true
+    var pageType: String = "Page"
     var recognizedText: String = "" {
         didSet {
             onRecognizedTextUpdate?(recognizedText)
@@ -45,6 +45,7 @@ class AddPassageViewModel {
         }
     }
     
+<<<<<<< HEAD
     private func createTextRecognitionRequest() -> VNRecognizeTextRequest {
         return VNRecognizeTextRequest { [weak self] (request, error) in
             self?.handleTextRecognition(request: request, error: error)
@@ -72,21 +73,31 @@ class AddPassageViewModel {
     }
     
     func savePassage(selectedBook: Item?, passageText: String, pageNumberText: String?, pageType: Bool, keywords: [String], completion: @escaping (Bool) -> Void) {
+=======
+    func saveVerse(selectedBook: Item?, verseText: String, pageNumberText: String?, pageType: String, keywords: [String], completion: @escaping (Bool) -> Void) {
+>>>>>>> parent of 8f2d48a... [Feat]#125-기존 verse부분 passage로 변경
         guard let book = selectedBook,
               let pageNumberText = pageNumberText,
               let pageNumber = Int(pageNumberText),
-              !passageText.isEmpty,
-              passageText != "텍스트를 입력하세요" else {
+              !verseText.isEmpty,
+              verseText != "텍스트를 입력하세요" else {
             completion(false)
             return
         }
         
         let currentDate = Date()
         
+<<<<<<< HEAD
         // Passage 인스턴스 생성
         let passage = Passage(title: book.title, passage: passageText, page: pageNumber, pageType: pageType, date: currentDate, keywords: keywords)
         
         CoreDataManager.shared.saveData(author: book.author, image: book.image, passage: passage)
+=======
+        // Verse 인스턴스 생성
+        let verse = Verse(name: book.title, author: book.author, image: book.image, text: verseText, pageNumber: pageNumber, pageType: pageType, keywords: keywords, date: currentDate)
+        
+        CoreDataManager.shared.saveData(verse: verse)
+>>>>>>> parent of 8f2d48a... [Feat]#125-기존 verse부분 passage로 변경
         completion(true)
     }
     

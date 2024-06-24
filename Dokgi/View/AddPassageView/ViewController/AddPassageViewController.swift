@@ -89,7 +89,8 @@ class AddPassageViewController: UIViewController {
     
     @objc func pageSegmentButtonTapped(_ sender: UIButton) {
         guard let index = containerView.pageSegment.buttons.firstIndex(of: sender) else { return }
-        viewModel.pageType = true
+        containerView.pageSegment.selectedIndex = index
+        viewModel.pageType = index == 0 ? "Page" : "%"
     }
     
     @objc func recordButtonTapped(_ sender: UIButton) {
@@ -109,10 +110,10 @@ class AddPassageViewController: UIViewController {
         }
         
         if let pageNumber = Int(containerView.pageNumberTextField.text ?? "") {
-            if viewModel.pageType == true && pageNumber <= 0 {
+            if viewModel.pageType == "Page" && pageNumber <= 0 {
                 showAlert(title: "페이지 값 오류", message: "0 이상을 입력하세요.")
                 return
-            } else if viewModel.pageType == false  && pageNumber > 100 {
+            } else if viewModel.pageType == "%" && pageNumber > 100 {
                 showAlert(title: "% 값 오류", message: "100이하를 입력하세요.")
                 return
             }
@@ -121,8 +122,8 @@ class AddPassageViewController: UIViewController {
             return
         }
         
-        viewModel.savePassage(selectedBook: viewModel.selectedBook,
-                            passageText: containerView.verseTextView.text ?? "",
+        viewModel.saveVerse(selectedBook: viewModel.selectedBook,
+                            verseText: containerView.verseTextView.text ?? "",
                             pageNumberText: containerView.pageNumberTextField.text ?? "",
                             pageType: viewModel.pageType,
                             keywords: viewModel.keywords) { success in
