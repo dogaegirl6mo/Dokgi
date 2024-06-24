@@ -25,11 +25,7 @@ class KeywordCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
-        
-        layer.cornerRadius = 14
-        clipsToBounds = true
-        layer.borderColor = UIColor.lightSkyBlue.cgColor
-        layer.borderWidth = 2
+        setupCell()
     }
     
     required init?(coder: NSCoder) {
@@ -53,10 +49,14 @@ class KeywordCell: UICollectionViewCell {
             $0.width.height.equalTo(20)
         }
         
-        layer.cornerRadius = 10
-        layer.masksToBounds = true
-        
         deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
+    }
+    
+    private func setupCell() {
+        layer.cornerRadius = 14
+        clipsToBounds = true
+        layer.borderColor = UIColor.lightSkyBlue.cgColor
+        layer.borderWidth = 2
     }
     
     @objc private func deleteButtonTapped() {

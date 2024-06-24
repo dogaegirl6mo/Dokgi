@@ -11,31 +11,24 @@ import UIKit
 
 class BookSearchContainerView: UIView {
     
+    // MARK: - UI
     let tableView = UITableView().then {
         $0.rowHeight = 150
         $0.showsVerticalScrollIndicator = false
         $0.isHidden = true
     }
     
-    let searchBar = UISearchBar().then {
-        $0.searchBarStyle = .minimal
-        $0.setPositionAdjustment(UIOffset(horizontal: 8, vertical: 0), for: .search)
-        $0.setPositionAdjustment(UIOffset(horizontal: -8, vertical: 0), for: .clear)
-        $0.placeholder = "책을 검색해보세요"
-        $0.searchTextField.borderStyle = .line
-        $0.searchTextField.layer.borderWidth = 1
-        $0.searchTextField.layer.borderColor = UIColor(resource: .searchBarLightGray).cgColor
-        $0.searchTextField.layer.backgroundColor = UIColor.white.cgColor
-        $0.searchTextField.layer.cornerRadius = 17
-        $0.searchTextField.layer.masksToBounds = true
-        $0.searchTextField.font = Pretendard.regular.dynamicFont(style: .subheadline)
+    let searchBar = SearchBar().then {
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.searchBarDarkGray,
+            NSAttributedString.Key.font: Pretendard.regular.dynamicFont(style: .subheadline)
+        ]
+        $0.searchTextField.attributedPlaceholder = NSAttributedString(string: "책을 검색해보세요", attributes: attributes)
     }
     
     let recentSearchLabel = UILabel().then {
-        let poundKeyImage: UIImage? = .poundKey
-        $0.text = "최근 검색"
         $0.font = Pretendard.semibold.dynamicFont(style: .headline)
-        $0.textColor = .black
+        let poundKeyImage: UIImage? = .poundKey
         if let image = poundKeyImage {
             let attachment = NSTextAttachment()
             attachment.image = image
@@ -105,8 +98,7 @@ class BookSearchContainerView: UIView {
     // MARK: - setConstraints
     private func setConstraints() {
         searchBar.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(16)
-            $0.horizontalEdges.equalToSuperview().inset(14)
+            $0.top.horizontalEdges.equalToSuperview().inset(16)
         }
         
         recentSearchStackView.snp.makeConstraints {

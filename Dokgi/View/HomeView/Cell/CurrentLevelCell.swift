@@ -126,6 +126,7 @@ class CurrentLevelCell: UICollectionViewCell {
         
         descrptionLabel.font = Pretendard.regular.dynamicFont(style: .callout)
         descrptionLabel.numberOfLines = 2
+        descrptionLabel.textColor = .black
         
         lengthLabel.textColor = .mediumSkyBlue
         lengthLabel.font = Pretendard.extrabold.dynamicFont(style: .title1)

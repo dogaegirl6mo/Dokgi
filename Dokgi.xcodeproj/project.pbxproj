@@ -78,6 +78,7 @@
 		A75D3D752C1B47D1006C2EB3 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75D3D742C1B47D1006C2EB3 /* StringExtension.swift */; };
 		A75D3D772C1B493F006C2EB3 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75D3D762C1B493F006C2EB3 /* DateExtension.swift */; };
 		A776FD142C25F15B0035C8BE /* DokgiV1ToV2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = A776FD132C25F15B0035C8BE /* DokgiV1ToV2.xcmappingmodel */; };
+		A774B63D2C2943EB00F43394 /* TextFieldExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A774B63C2C2943EB00F43394 /* TextFieldExtension.swift */; };
 		A78D2A1C2C216FCF00F8AC72 /* LibraryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A78D2A1B2C216FCF00F8AC72 /* LibraryViewModel.swift */; };
 		A7D10C0F2C2530C700881AB7 /* DokgiV1ToV2MigrationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D10C0E2C2530C700881AB7 /* DokgiV1ToV2MigrationPolicy.swift */; };
 		A7F2DB192C134B200020B0AA /* PassageDetailContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F2DB182C134B200020B0AA /* PassageDetailContainerView.swift */; };
@@ -88,7 +89,6 @@
 		AB23869F2C19B5FC00E6FACE /* VerseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB23869E2C19B5FC00E6FACE /* VerseModel.swift */; };
 		AB2386A22C1A0CDB00E6FACE /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AB2386A12C1A0CDB00E6FACE /* IQKeyboardManagerSwift */; };
 		AB2386A52C1AF1A100E6FACE /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = AB355D572C180D8F00B3DE16 /* Kingfisher */; };
-		AB2386A82C1B021D00E6FACE /* BetterSegmentedControl in Frameworks */ = {isa = PBXBuildFile; productRef = AB2386A72C1B021D00E6FACE /* BetterSegmentedControl */; };
 		AB2386B22C1FE9F000E6FACE /* AddPassageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2386B12C1FE9F000E6FACE /* AddPassageViewModel.swift */; };
 		AB355D552C180C9700B3DE16 /* BookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB355D542C180C9700B3DE16 /* BookCell.swift */; };
 		AB355D5B2C18725400B3DE16 /* KeywordCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB355D5A2C18725400B3DE16 /* KeywordCell.swift */; };
@@ -99,6 +99,7 @@
 		AB4BDC0E2C249F1B001FDA8F /* BookSearchContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4BDC0D2C249F1B001FDA8F /* BookSearchContainerView.swift */; };
 		AB66D3442C0EEFE3000D72DA /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB66D3432C0EEFE3000D72DA /* TabBarViewController.swift */; };
 		AB66D3692C17688C000D72DA /* BookSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB66D3682C17688C000D72DA /* BookSearchViewController.swift */; };
+		ABEB97222C28FA5C00501696 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEB97212C28FA5C00501696 /* InfoView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -192,6 +193,7 @@
 		A75D3D742C1B47D1006C2EB3 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		A75D3D762C1B493F006C2EB3 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		A776FD132C25F15B0035C8BE /* DokgiV1ToV2.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = DokgiV1ToV2.xcmappingmodel; sourceTree = "<group>"; };
+		A774B63C2C2943EB00F43394 /* TextFieldExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldExtension.swift; sourceTree = "<group>"; };
 		A78D2A1B2C216FCF00F8AC72 /* LibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewModel.swift; sourceTree = "<group>"; };
 		A7D10C0E2C2530C700881AB7 /* DokgiV1ToV2MigrationPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DokgiV1ToV2MigrationPolicy.swift; sourceTree = "<group>"; };
 		A7D10C112C253E0A00881AB7 /* Dokgi 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Dokgi 2.xcdatamodel"; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 		AB4BDC0D2C249F1B001FDA8F /* BookSearchContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookSearchContainerView.swift; sourceTree = "<group>"; };
 		AB66D3432C0EEFE3000D72DA /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		AB66D3682C17688C000D72DA /* BookSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookSearchViewController.swift; sourceTree = "<group>"; };
+		ABEB97212C28FA5C00501696 /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -231,7 +234,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB2386A52C1AF1A100E6FACE /* Kingfisher in Frameworks */,
-				AB2386A82C1B021D00E6FACE /* BetterSegmentedControl in Frameworks */,
 				AB2386A22C1A0CDB00E6FACE /* IQKeyboardManagerSwift in Frameworks */,
 				A74874932C0D7F3400B830EE /* RxSwift in Frameworks */,
 				A74874912C0D7F3400B830EE /* RxRelay in Frameworks */,
@@ -509,6 +511,7 @@
 			isa = PBXGroup;
 			children = (
 				AB4BDC032C20394C001FDA8F /* AddPassageContainerView.swift */,
+				ABEB97212C28FA5C00501696 /* InfoView.swift */,
 				AB4BDC0D2C249F1B001FDA8F /* BookSearchContainerView.swift */,
 			);
 			path = View;
@@ -644,6 +647,7 @@
 				A75D3D742C1B47D1006C2EB3 /* StringExtension.swift */,
 				A75D3D762C1B493F006C2EB3 /* DateExtension.swift */,
 				AB4BDC0B2C249608001FDA8F /* addSubviewsExtension.swift */,
+				A774B63C2C2943EB00F43394 /* TextFieldExtension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -789,7 +793,6 @@
 				A74874922C0D7F3400B830EE /* RxSwift */,
 				AB355D572C180D8F00B3DE16 /* Kingfisher */,
 				AB2386A12C1A0CDB00E6FACE /* IQKeyboardManagerSwift */,
-				AB2386A72C1B021D00E6FACE /* BetterSegmentedControl */,
 			);
 			productName = Dokgi;
 			productReference = A748745E2C0D7E0600B830EE /* Dokgi.app */;
@@ -829,7 +832,6 @@
 				A748748D2C0D7F3400B830EE /* XCRemoteSwiftPackageReference "RxSwift" */,
 				AB355D562C180D8F00B3DE16 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				AB2386A02C1A0CDB00E6FACE /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
-				AB2386A62C1B021D00E6FACE /* XCRemoteSwiftPackageReference "BetterSegmentedControl" */,
 			);
 			productRefGroup = A748745F2C0D7E0600B830EE /* Products */;
 			projectDirPath = "";
@@ -900,6 +902,7 @@
 				854E15842C2495A500FE5256 /* BaseLibraryAndPassageViewController.swift in Sources */,
 				85BC84762C21BCD700D8A27E /* AppDelegate.swift in Sources */,
 				A75908D12C12D36100415D6D /* UserDefaultsKey.swift in Sources */,
+				ABEB97222C28FA5C00501696 /* InfoView.swift in Sources */,
 				AB23869F2C19B5FC00E6FACE /* VerseModel.swift in Sources */,
 				A748746C2C0D7E0700B830EE /* Dokgi.xcdatamodeld in Sources */,
 				AB355D5B2C18725400B3DE16 /* KeywordCell.swift in Sources */,
@@ -943,6 +946,7 @@
 				855318BB2C16E56800340ACF /* BookDetailViewController.swift in Sources */,
 				A776FD142C25F15B0035C8BE /* DokgiV1ToV2.xcmappingmodel in Sources */,
 				A75908B92C0F087900415D6D /* AlarmView.swift in Sources */,
+				A774B63D2C2943EB00F43394 /* TextFieldExtension.swift in Sources */,
 				3C9AD89A2C2462B0007393C1 /* FloatingButtonViewController.swift in Sources */,
 				A75908C62C0F756800415D6D /* TimePickerViewController.swift in Sources */,
 				854E158A2C25AE3E00FE5256 /* SearchBar.swift in Sources */,
@@ -1306,14 +1310,6 @@
 				minimumVersion = 7.0.3;
 			};
 		};
-		AB2386A62C1B021D00E6FACE /* XCRemoteSwiftPackageReference "BetterSegmentedControl" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/gmarm/BetterSegmentedControl";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.1;
-			};
-		};
 		AB355D562C180D8F00B3DE16 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
@@ -1364,11 +1360,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AB2386A02C1A0CDB00E6FACE /* XCRemoteSwiftPackageReference "IQKeyboardManager" */;
 			productName = IQKeyboardManagerSwift;
-		};
-		AB2386A72C1B021D00E6FACE /* BetterSegmentedControl */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AB2386A62C1B021D00E6FACE /* XCRemoteSwiftPackageReference "BetterSegmentedControl" */;
-			productName = BetterSegmentedControl;
 		};
 		AB355D572C180D8F00B3DE16 /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;

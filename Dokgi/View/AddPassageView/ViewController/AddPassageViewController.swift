@@ -18,9 +18,9 @@ protocol BookSelectionDelegate: AnyObject {
 class AddPassageViewController: UIViewController {
     
     let viewModel = AddPassageViewModel()
-    let containerView = AddPassageContainerView()
+    private let containerView = AddPassageContainerView()
     
-    let scrollView = UIScrollView().then {
+    private let scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
         $0.alwaysBounceVertical = true
         $0.contentInsetAdjustmentBehavior = .never
@@ -47,7 +47,7 @@ class AddPassageViewController: UIViewController {
         }
         view.addSubview(scrollView)
         scrollView.addSubview(containerView)
-        containerView.keywordCollectionView.register(KeywordCell.self, forCellWithReuseIdentifier: KeywordCell.reuseIdentifier)
+        containerView.keywordCollectionView.register(KeywordCollectionViewCell.self, forCellWithReuseIdentifier: KeywordCollectionViewCell.identifier)
         containerView.keywordCollectionView.delegate = self
         containerView.keywordCollectionView.dataSource = self
         containerView.keywordField.delegate = self
@@ -149,16 +149,16 @@ class AddPassageViewController: UIViewController {
 
     func displayBookInfo() {
         if let book = viewModel.selectedBook {
-            containerView.titleLabel.text = book.title
-            containerView.titleLabel.font = Pretendard.semibold.dynamicFont(style: .headline)
-            containerView.titleLabel.textColor = .black
-            containerView.authorLabel.text = book.author
+            containerView.infoView.titleLabel.text = book.title
+            containerView.infoView.titleLabel.font = Pretendard.semibold.dynamicFont(style: .headline)
+            containerView.infoView.titleLabel.textColor = .black
+            containerView.infoView.authorLabel.text = book.author
             if let url = URL(string: book.image) {
-                containerView.imageView.kf.setImage(with: url)
-                containerView.imageView.contentMode = .scaleAspectFill
+                containerView.infoView.imageView.kf.setImage(with: url)
+                containerView.infoView.imageView.contentMode = .scaleAspectFill
             }
         }
-        containerView.overlayView.isHidden = true
+        containerView.infoViewOverLapView.isHidden = true
         containerView.searchButton.isHidden = true
     }
     
@@ -231,13 +231,14 @@ extension AddPassageViewController: UICollectionViewDelegate, UICollectionViewDa
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KeywordCell", for: indexPath) as? KeywordCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: KeywordCollectionViewCell.identifier, for: indexPath) as? KeywordCollectionViewCell else {
             return UICollectionViewCell()
         }
         
         let reversedIndex = viewModel.keywords.count - 1 - indexPath.item
         let keyword = viewModel.keywords[reversedIndex]
-        cell.configure(with: keyword)
+        cell.xButton.isHidden = false
+        cell.keywordLabel.text = keyword
         return cell
     }
     
@@ -247,7 +248,7 @@ extension AddPassageViewController: UICollectionViewDelegate, UICollectionViewDa
         let font = Pretendard.regular.dynamicFont(style: .callout)
         let attributes = [NSAttributedString.Key.font: font]
         let textSize = (keyword as NSString).size(withAttributes: attributes)
-        let cellWidth = textSize.width + 35
+        let cellWidth = textSize.width + 40
         let cellHeight: CGFloat = 34
         
         return CGSize(width: cellWidth, height: cellHeight)

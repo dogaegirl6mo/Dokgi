@@ -34,6 +34,7 @@ class KeywordCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         setContentView()
         setupLayout()
+        setupAction()
     }
     
     required init?(coder: NSCoder) {
@@ -51,6 +52,16 @@ class KeywordCollectionViewCell: UICollectionViewCell {
         self.layer.borderWidth = 1
         self.layer.cornerRadius = 14
         self.clipsToBounds = true
+    }
+    
+    private func setupAction() {
+        xButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc private func deleteButtonTapped() {
+        guard let collectionView = superview as? UICollectionView else { return }
+        guard let indexPath = collectionView.indexPath(for: self) else { return }
+        (collectionView.delegate as? AddPassageViewController)?.removeKeyword(at: indexPath)
     }
     
     // MARK: - Layout

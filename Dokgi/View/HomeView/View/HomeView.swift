@@ -9,7 +9,13 @@ import SnapKit
 import Then
 import UIKit
 
+protocol HomeViewDelegate: AnyObject {
+    func didTapSettingButton()
+}
+
 class HomeView: UIView {
+    weak var delegate: HomeViewDelegate?
+    
     let scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
     }
@@ -24,6 +30,7 @@ class HomeView: UIView {
     let currentLengthLabel = UILabel().then {
         $0.text = "현재 구절 길이"
         $0.font = Pretendard.semibold.dynamicFont(style: .title3)
+        $0.textColor = .black
     }
 
     let currentLevelCollectionView = UICollectionView(frame: .zero, collectionViewLayout: CurrentLevelCollectionFlowLayout()).then {
@@ -35,6 +42,7 @@ class HomeView: UIView {
     
     let nextLengthLabel = UILabel().then {
         $0.font = Pretendard.regular.dynamicFont(style: .subheadline)
+        $0.textColor = .black
     }
     
     let lengthSlider = UISlider().then {
@@ -73,6 +81,7 @@ class HomeView: UIView {
     let todayVersesLabel = UILabel().then {
         $0.text = "오늘의 구절"
         $0.font = Pretendard.semibold.dynamicFont(style: .title3)
+        $0.textColor = .black
     }
     
     let todayVersesColletionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
@@ -195,5 +204,15 @@ class HomeView: UIView {
             $0.centerX.equalTo(todayVersesColletionView.snp.centerX)
             $0.bottom.equalTo(todayVersesColletionView.snp.bottom).offset(-8)
         }
+    }
+    
+    func setConfigureUI(viewModel: HomeViewModel) {
+        settingButton.addTarget(self, action: #selector(didTapSetting), for: .touchUpInside)
+        nextLengthLabel.text = "다음 레벨까지 \(Int(Float(viewModel.currentLevelPercent.value) * 100)) % 달성했습니다!"
+        indicatorDots.numberOfPages = viewModel.randomVerses.value.count
+    }
+    
+    @objc func didTapSetting() {
+        delegate?.didTapSettingButton()
     }
 }

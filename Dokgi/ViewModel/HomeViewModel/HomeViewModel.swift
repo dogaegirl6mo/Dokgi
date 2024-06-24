@@ -15,7 +15,7 @@ class HomeViewModel {
     
     let currentLevel = BehaviorRelay<Int>(value: 1)
     let currentLevelPercent = BehaviorRelay<Double>(value: 0)
-    let verses = BehaviorRelay<[String]>(value: [])
+    let passages = BehaviorRelay<[Passage]>(value: [])
     let currentLevelImage = BehaviorRelay<UIImage?>(value: UIImage(named: " "))
     let randomVerses = BehaviorRelay<[String]>(value: [])
     
@@ -38,7 +38,8 @@ class HomeViewModel {
 
     init() {
         
-        verses
+        passages
+            .map { $0.map { $0.passage } }
             .subscribe(onNext: { [weak self] value in
                 guard let self = self else { return }
                 
@@ -61,10 +62,10 @@ class HomeViewModel {
             .disposed(by: disposeBag)
         
         // 구절 추가 업데이트
-        CoreDataManager.shared.bookData
-            .map{ $0.map { $0.text }}
-            .subscribe(onNext: { [weak self] verses in
-                self?.verses.accept(verses)
+        CoreDataManager.shared.passageData
+//            .map{ $0.map { $0.text }}
+            .subscribe(onNext: { [weak self] passages in
+                self?.passages.accept(passages)
             })
             .disposed(by: disposeBag)
         
@@ -97,7 +98,7 @@ class HomeViewModel {
     }
     
     func shuffleAndSaveVerses() {
-        let versesCount = self.verses.value.count
+        let versesCount = self.passages.value.count
         
         guard versesCount > 0 else {
             print("No verses recorded")
@@ -105,7 +106,7 @@ class HomeViewModel {
         }
         
         let shuffledCount = min(5, versesCount)
-        let shuffled = verses.value.shuffled().prefix(shuffledCount).map { $0 }
+        let shuffled = passages.value.shuffled().prefix(shuffledCount).map { $0.passage }
         
         randomVerses.accept(shuffled)
         UserDefaults.standard.set(today, forKey: "savedDate")
