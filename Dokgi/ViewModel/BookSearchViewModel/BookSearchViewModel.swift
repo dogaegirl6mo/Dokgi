@@ -39,7 +39,7 @@ class BookSearchViewModel {
     }
     
     func saveRecentSearch(_ text: String) {
-        var recentSearches = UserDefaults.standard.stringArray(forKey: UserDefaultsKeys.recentSearches.rawValue) ?? []
+        var recentSearches = loadRecentSearches()
         
         recentSearches.removeAll(where: { $0 == text })
         recentSearches.insert(text, at: 0)
@@ -55,7 +55,7 @@ class BookSearchViewModel {
     }
     
     func removeRecentSearch(at indexPath: IndexPath) {
-        var recentSearches = UserDefaults.standard.stringArray(forKey: UserDefaultsKeys.recentSearches.rawValue) ?? []
+        var recentSearches = loadRecentSearches()
         recentSearches.remove(at: indexPath.item)
         UserDefaults.standard.set(recentSearches, forKey: UserDefaultsKeys.recentSearches.rawValue)
     }

@@ -26,6 +26,7 @@ class RecentSearchCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
+        setupCell()
     }
     
     required init?(coder: NSCoder) {
@@ -49,10 +50,19 @@ class RecentSearchCell: UICollectionViewCell {
             $0.width.height.equalTo(20)
         }
         
-        layer.cornerRadius = 10
-        layer.masksToBounds = true
-        
         deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
+    }
+    
+    private func setupCell() {
+        layer.cornerRadius = 14
+        clipsToBounds = true
+        layer.borderColor = UIColor.lightSkyBlue.cgColor
+        layer.borderWidth = 2
+    }
+    
+    func configure(with text: String, viewModel: BookSearchViewModel) {
+        self.viewModel = viewModel
+        label.text = text
     }
     
     @objc private func deleteButtonTapped() {
@@ -62,10 +72,5 @@ class RecentSearchCell: UICollectionViewCell {
         viewModel.removeRecentSearch(at: indexPath)
         
         collectionView.reloadData()
-    }
-    
-    func configure(with text: String, viewModel: BookSearchViewModel) {
-        self.viewModel = viewModel
-        label.text = text
     }
 }
