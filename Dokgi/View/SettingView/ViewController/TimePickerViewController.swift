@@ -68,7 +68,7 @@ class TimePickerViewController: UIViewController {
         timePicker.delegate = self
         timePicker.dataSource = self
         setupLayout()
-        buttonTapped()
+        dataBind()
     }
     // MARK: - Layout
     func setupLayout() {
@@ -95,7 +95,7 @@ class TimePickerViewController: UIViewController {
         timePicker.selectRow(viewModel.selectTime[2], inComponent: 2, animated: false)
     }
     
-    func buttonTapped() {
+    func dataBind() {
         cancelBtn.rx.tap.subscribe { [weak self] _ in
             self?.dismiss(animated: true)
         }.disposed(by: disposeBag)

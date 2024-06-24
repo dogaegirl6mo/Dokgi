@@ -5,12 +5,10 @@
 //  Created by 한철희 on 6/4/24.
 //
 
-import BetterSegmentedControl
 import Kingfisher
 import SnapKit
 import Then
 import UIKit
-import Vision
 import VisionKit
 
 protocol BookSelectionDelegate: AnyObject {
@@ -20,9 +18,9 @@ protocol BookSelectionDelegate: AnyObject {
 class AddPassageViewController: UIViewController {
     
     let viewModel = AddPassageViewModel()
-    let containerView = AddPassageContainerView()
+    private let containerView = AddPassageContainerView()
     
-    let scrollView = UIScrollView().then {
+    private let scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
         $0.alwaysBounceVertical = true
         $0.contentInsetAdjustmentBehavior = .never
@@ -30,12 +28,10 @@ class AddPassageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        containerView.pageSegment.selectedIndex = 0
         setupViews()
-        initLayout()
+        setConstraints()
         setupActions()
         updateCharacterCountLabel()
-        setUserInfoTextField()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -45,18 +41,21 @@ class AddPassageViewController: UIViewController {
     
     func setupViews() {
         view.backgroundColor = .white
+        containerView.pageSegment.selectedIndex = 0
+        viewModel.onRecognizedTextUpdate = { [weak self] recognizedText in
+            self?.updateTextView(with: recognizedText)
+        }
         view.addSubview(scrollView)
         scrollView.addSubview(containerView)
-        
-        containerView.keywordCollectionView.register(KeywordCell.self, forCellWithReuseIdentifier: KeywordCell.reuseIdentifier)
+        containerView.keywordCollectionView.register(KeywordCollectionViewCell.self, forCellWithReuseIdentifier: KeywordCollectionViewCell.identifier)
         containerView.keywordCollectionView.delegate = self
         containerView.keywordCollectionView.dataSource = self
         containerView.keywordField.delegate = self
         containerView.verseTextView.delegate = self
     }
     
-    // MARK: - 제약조건
-    func initLayout() {
+    // MARK: - setConstraints
+    func setConstraints() {
         scrollView.snp.makeConstraints {
             $0.edges.equalTo(view.safeAreaLayoutGuide)
         }
@@ -96,30 +95,30 @@ class AddPassageViewController: UIViewController {
     
     @objc func recordButtonTapped(_ sender: UIButton) {
         if containerView.searchButton.isHidden == false {
-            viewModel.showAlert(presenter: self, title: "책 정보 기록", message: "책 검색을 눌러 책 정보를 기록해주세요")
+            showAlert(title: "책 정보 기록", message: "책 검색을 눌러 책 정보를 기록해주세요")
             return
         }
         
         if containerView.verseTextView.text.isEmpty || containerView.verseTextView.text == "텍스트를 입력하세요" {
-            viewModel.showAlert(presenter: self, title: "구절 입력", message: "구절을 입력해 주세요")
+            showAlert(title: "구절 입력", message: "구절을 입력해 주세요")
             return
         }
         
         if containerView.pageNumberTextField.text?.isEmpty == true {
-            viewModel.showAlert(presenter: self, title: "페이지", message: "페이지를 입력해 주세요")
+            showAlert(title: "페이지", message: "페이지를 입력해 주세요")
             return
         }
         
-        guard let pageNumberText = containerView.pageNumberTextField.text, let pageNumber = Int(pageNumberText) else {
+        if let pageNumber = Int(containerView.pageNumberTextField.text ?? "") {
+            if viewModel.pageType == "Page" && pageNumber <= 0 {
+                showAlert(title: "페이지 값 오류", message: "0 이상을 입력하세요.")
+                return
+            } else if viewModel.pageType == "%" && pageNumber > 100 {
+                showAlert(title: "% 값 오류", message: "100이하를 입력하세요.")
+                return
+            }
+        } else {
             showAlert(title: "입력 값 오류", message: "숫자를 입력하세요.")
-            return
-        }
-        
-        if viewModel.pageType == "Page" && Int((containerView.pageNumberTextField.text)!) ?? 0 <= 0 {
-            showAlert(title: "페이지 값 오류", message: "0 이상을 입력하세요.")
-            return
-        } else if viewModel.pageType == "%" && Int((containerView.pageNumberTextField.text)!) ?? 101 > 100 {
-            showAlert(title: "% 값 오류", message: "100이하를 입력하세요.")
             return
         }
         
@@ -131,7 +130,7 @@ class AddPassageViewController: UIViewController {
             if success {
                 self.navigationController?.popViewController(animated: true)
             } else {
-                self.viewModel.showAlert(presenter: self, title: "경고", message: "모든 필수 정보를 입력해주세요.")
+                self.showAlert(title: "경고", message: "모든 필수 정보를 입력해주세요.")
             }
         }
     }
@@ -144,81 +143,31 @@ class AddPassageViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    func setUserInfoTextField() {
-        containerView.keywordField.backgroundColor = .white
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: containerView.keywordField.frame.height))
-        containerView.keywordField.leftView = paddingView
-        containerView.keywordField.leftViewMode = .always
-        containerView.keywordField.rightView = paddingView
-        containerView.keywordField.rightViewMode = .always
-    }
-    
-    // 초기 텍스트뷰 글자 수 설정
     func updateCharacterCountLabel() {
-        let currentCount = containerView.verseTextView.text == "텍스트를 입력하세요" ? 0 : containerView.verseTextView.text.count
-        containerView.characterCountLabel.text = "\(currentCount)/200"
+        viewModel.updateCharacterCountText(for: containerView.verseTextView.text, label: containerView.characterCountLabel)
     }
-    
-    // 텍스트 속성을 설정하는 함수
-    static func createAttributedString(for text: String) -> NSAttributedString {
-        let attributedString = NSMutableAttributedString(string: text)
-        
-        // "키워드" 부분 설정
-        let keywordRange = (text as NSString).range(of: "키워드")
-        attributedString.addAttributes([.font: Pretendard.semibold.dynamicFont(style: .headline)], range: keywordRange)
-        
-        // "선택" 부분 설정
-        let selectionRange = (text as NSString).range(of: "(선택)")
-        attributedString.addAttributes([.font: Pretendard.regular.dynamicFont(style: .headline), .foregroundColor: UIColor.gray], range: selectionRange)
-        
-        return attributedString
-    }
-    
+
     func displayBookInfo() {
         if let book = viewModel.selectedBook {
-            containerView.titleLabel.text = book.title
-            containerView.titleLabel.font = Pretendard.semibold.dynamicFont(style: .headline)
-            containerView.titleLabel.textColor = .black
-            containerView.authorLabel.text = book.author
+            containerView.infoView.titleLabel.text = book.title
+            containerView.infoView.titleLabel.font = Pretendard.semibold.dynamicFont(style: .headline)
+            containerView.infoView.titleLabel.textColor = .black
+            containerView.infoView.authorLabel.text = book.author
             if let url = URL(string: book.image) {
-                containerView.imageView.kf.setImage(with: url)
-                containerView.imageView.contentMode = .scaleAspectFill
+                containerView.infoView.imageView.kf.setImage(with: url)
+                containerView.infoView.imageView.contentMode = .scaleAspectFill
             }
         }
-        containerView.overlayView.isHidden = true
+        containerView.infoViewOverLapView.isHidden = true
         containerView.searchButton.isHidden = true
     }
     
-    func recognizeText(from image: UIImage) {
-        guard let cgImage = image.cgImage else {
-            fatalError("UIImage에서 CGImage를 얻을 수 없습니다.")
-        }
-        
-        let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-        let request = VNRecognizeTextRequest { [weak self] (request, error) in
-            guard let observations = request.results as? [VNRecognizedTextObservation], error == nil else {
-                print("텍스트 인식 오류: \(error?.localizedDescription ?? "알 수 없는 오류")")
-                return
-            }
-            
-            let recognizedStrings = observations.compactMap { $0.topCandidates(1).first?.string }
-            let joinedString = recognizedStrings.joined(separator: "\n")
-            let limitedString = String(joinedString.prefix(200))
-            
-            DispatchQueue.main.async {
-                self?.viewModel.recognizedText = limitedString
-                self?.containerView.verseTextView.text = self?.viewModel.recognizedText
-            }
-        }
-        request.revision = VNRecognizeTextRequestRevision3
-        request.recognitionLevel = .accurate
-        request.recognitionLanguages = ["ko-KR"]
-        request.usesLanguageCorrection = true
-        
-        do {
-            try requestHandler.perform([request])
-        } catch {
-            print("텍스트 인식 수행 실패: \(error.localizedDescription)")
+    private func updateTextView(with text: String) {
+        if containerView.verseTextView.text.isEmpty || containerView.verseTextView.textColor == .placeholderText {
+            containerView.verseTextView.text = text
+            containerView.verseTextView.textColor = .label
+            containerView.verseTextView.font = Pretendard.regular.dynamicFont(style: .body)
+            updateCharacterCountLabel()
         }
     }
 
@@ -237,7 +186,7 @@ extension AddPassageViewController: UITextFieldDelegate {
                 viewModel.keywords[textField.tag] = keyword
                 containerView.keywordCollectionView.reloadData()
             } else {
-                showAlert(message: "키워드는 최대 10개까지 입력할 수 있습니다.")
+                showAlert(title: "알림", message: "키워드는 최대 10개까지 입력할 수 있습니다.")
             }
         }
         textField.text = ""
@@ -253,7 +202,7 @@ extension AddPassageViewController: UITextFieldDelegate {
                     containerView.keywordCollectionView.reloadData()
                     textField.tag = viewModel.keywords.count - 1
                 } else {
-                    showAlert(message: "키워드는 최대 10개까지 입력할 수 있습니다.")
+                    showAlert(title: "알림", message: "키워드는 최대 10개까지 입력할 수 있습니다.")
                 }
             }
         }
@@ -273,12 +222,6 @@ extension AddPassageViewController: UITextFieldDelegate {
         let newText = currentText.replacingCharacters(in: range, with: string)
         return newText.count <= 20
     }
-    
-    private func showAlert(message: String) {
-        let alert = UIAlertController(title: "알림", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
-    }
 }
 
 // MARK: - CollectionView
@@ -288,17 +231,14 @@ extension AddPassageViewController: UICollectionViewDelegate, UICollectionViewDa
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "KeywordCell", for: indexPath) as? KeywordCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: KeywordCollectionViewCell.identifier, for: indexPath) as? KeywordCollectionViewCell else {
             return UICollectionViewCell()
         }
         
         let reversedIndex = viewModel.keywords.count - 1 - indexPath.item
         let keyword = viewModel.keywords[reversedIndex]
-        cell.configure(with: keyword)
-        cell.layer.cornerRadius = 14
-        cell.clipsToBounds = true
-        cell.layer.borderColor = UIColor.lightSkyBlue.cgColor
-        cell.layer.borderWidth = 2
+        cell.xButton.isHidden = false
+        cell.keywordLabel.text = keyword
         return cell
     }
     
@@ -308,7 +248,7 @@ extension AddPassageViewController: UICollectionViewDelegate, UICollectionViewDa
         let font = Pretendard.regular.dynamicFont(style: .callout)
         let attributes = [NSAttributedString.Key.font: font]
         let textSize = (keyword as NSString).size(withAttributes: attributes)
-        let cellWidth = textSize.width + 35
+        let cellWidth = textSize.width + 40
         let cellHeight: CGFloat = 34
         
         return CGSize(width: cellWidth, height: cellHeight)
@@ -318,10 +258,10 @@ extension AddPassageViewController: UICollectionViewDelegate, UICollectionViewDa
 // MARK: - 텍스트뷰 placeholder
 extension AddPassageViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
-        guard textView.textColor == .placeholderText else { return }
-        textView.textColor = .label
-        textView.font = Pretendard.regular.dynamicFont(style: .body)
-        textView.text = viewModel.recognizedText.isEmpty ? nil : viewModel.recognizedText
+        guard containerView.verseTextView.textColor == .placeholderText else { return }
+        containerView.verseTextView.textColor = .label
+        containerView.verseTextView.font = Pretendard.regular.dynamicFont(style: .body)
+        containerView.verseTextView.text = nil
         updateCharacterCountLabel()
     }
     
@@ -335,13 +275,12 @@ extension AddPassageViewController: UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
         let currentCount = textView.text.count
-        containerView.characterCountLabel.text = "\(currentCount)/200"
         
         if currentCount > 200 {
             textView.text = String(textView.text.prefix(200))
             containerView.characterCountLabel.text = "200/200"
         } else {
-            containerView.characterCountLabel.text = "\(currentCount)/200"
+            updateCharacterCountLabel()
         }
     }
 }
@@ -349,18 +288,20 @@ extension AddPassageViewController: UITextViewDelegate {
 // MARK: - 스캔
 extension AddPassageViewController: VNDocumentCameraViewControllerDelegate {
     func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
-        let image = scan.imageOfPage(at: 0)
-        recognizeText(from: image)
         controller.dismiss(animated: true)
+        if scan.pageCount > 0 {
+            let scannedImage = scan.imageOfPage(at: 0)
+            viewModel.recognizeText(from: scannedImage)
+        }
     }
-    
+
     func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
         controller.dismiss(animated: true)
     }
-    
+
     func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
-        print("문서 스캔 실패: \(error.localizedDescription)")
         controller.dismiss(animated: true)
+        print("스캔 실패: \(error.localizedDescription)")
     }
 }
 
@@ -371,3 +312,4 @@ extension AddPassageViewController: BookSelectionDelegate {
         displayBookInfo()
     }
 }
+

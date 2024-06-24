@@ -57,9 +57,9 @@ class TodayPassageCell: UICollectionViewCell {
     
     func configureUI() {
         contentView.backgroundColor = .lightSkyBlue
-        verse.text = "뭘 쓰고 싶었는지 전혀 기억이 나지 않았다. 아무 것도 쓰기 싫었다. 그저 빨리 돌아가 씻고 싶을 뿐이었다."
         verse.font = Pretendard.regular.dynamicFont(style: .callout)
         verse.numberOfLines = 4
+        verse.textColor = .black
         bookImage.image = .mainBook
     }
 }

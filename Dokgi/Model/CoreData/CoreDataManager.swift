@@ -15,10 +15,6 @@ class CoreDataManager {
     
     var bookData = BehaviorRelay<[Verse]>(value: [])
     
-    //    var persistent: NSPersistentContainer? {
-    //        (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer
-    //    }
-    
     var persistent: NSPersistentContainer? = {
         let storeURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.dogaegeol6mo.Dokgi")!.appendingPathComponent("Dokgi.sqlite")
         let storeDescription = NSPersistentStoreDescription(url: storeURL)

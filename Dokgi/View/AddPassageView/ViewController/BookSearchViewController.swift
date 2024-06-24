@@ -12,248 +12,165 @@ import Kingfisher
 
 class BookSearchViewController: UIViewController {
     
-    let viewModel = BookSearchViewModel()
     weak var delegate: BookSelectionDelegate?
-    
-    var searchResults: [Item] = []
-    var isLoading = false
-    var isLoadingLast = false
-    var query: String = ""
-    var startIndex: Int = 1
-    
-    let tableView = UITableView().then {
-        $0.rowHeight = 150
-        $0.showsVerticalScrollIndicator = false
-        $0.isHidden = true
-    }
-    
-    let searchBar = UISearchBar().then {
-        $0.searchBarStyle = .minimal
-        $0.setPositionAdjustment(UIOffset(horizontal: 8, vertical: 0), for: .search)
-        $0.setPositionAdjustment(UIOffset(horizontal: -8, vertical: 0), for: .clear)
-        $0.placeholder = "책을 검색해보세요"
-        $0.searchTextField.borderStyle = .line
-        $0.searchTextField.layer.borderWidth = 1
-        $0.searchTextField.layer.borderColor = UIColor(resource: .searchBarLightGray).cgColor
-        $0.searchTextField.layer.backgroundColor = UIColor.white.cgColor
-        $0.searchTextField.layer.cornerRadius = 17
-        $0.searchTextField.layer.masksToBounds = true
-        $0.searchTextField.font = Pretendard.regular.dynamicFont(style: .subheadline)
-    }
-    
-    let recentSearchLabel = UILabel().then {
-        let poundKeyImage: UIImage? = .poundKey
-        $0.text = "최근 검색"
-        $0.font = Pretendard.semibold.dynamicFont(style: .headline)
-        $0.textColor = .black
-        if let image = poundKeyImage {
-            let attachment = NSTextAttachment()
-            attachment.image = image
-            attachment.bounds = CGRect(x: 0, y: -3, width: image.size.width, height: image.size.height)
-            let attachmentString = NSAttributedString(attachment: attachment)
-            let mutableAttributedString = NSMutableAttributedString(string: " ")
-            mutableAttributedString.append(attachmentString)
-            mutableAttributedString.append(NSAttributedString(string: " 최근 검색어"))
-            $0.attributedText = mutableAttributedString
-        }
-    }
-    
-    let clearAllButton = UIButton().then {
-        $0.setTitle("전체 삭제", for: .normal)
-        $0.titleLabel?.font = Pretendard.regular.dynamicFont(style: .footnote)
-        $0.setTitleColor(.placeholderText, for: .normal)
-        $0.addTarget(self, action: #selector(clearAllButtonTapped), for: .touchUpInside)
-        $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
-    }
-    
-    let noResultsLabel = UILabel().then {
-        $0.text = "검색어와 일치하는 책이 없습니다"
-        $0.font = Pretendard.regular.dynamicFont(style: .subheadline)
-        $0.textAlignment = .center
-        $0.isHidden = true
-    }
-    
-    let recentSearchStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.alignment = .center
-        $0.distribution = .equalSpacing
-        $0.spacing = 8
-    }
-    
-    let collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 100, height: 30)
-        layout.minimumInteritemSpacing = 10
-        layout.minimumLineSpacing = 10
-        return UICollectionView(frame: .zero, collectionViewLayout: layout).then {
-            $0.backgroundColor = .white
-            $0.isHidden = false
-            $0.showsHorizontalScrollIndicator = false
-        }
-    }()
+    private let viewModel = BookSearchViewModel()
+    private let containerView = BookSearchContainerView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        setupTableView()
-        setupCollectionView()
+        setUpAction()
     }
     
     private func setupUI() {
         view.backgroundColor = .white
-        searchBar.delegate = self
-        
-        addSubviews()
-        setupConstraints()
+        setupSearchBar()
+        setupTableView()
+        setupCollectionView()
+        initLayout()
     }
     
-    private func addSubviews() {
-        view.addSubview(searchBar)
-        view.addSubview(recentSearchStackView)
-        view.addSubview(collectionView)
-        view.addSubview(tableView)
-        view.addSubview(noResultsLabel)
-        
-        recentSearchStackView.addArrangedSubview(recentSearchLabel)
-        recentSearchStackView.addArrangedSubview(clearAllButton)
+    private func initLayout() {
+        view.addSubview(containerView)
+        containerView.snp.makeConstraints { $0.edges.equalToSuperview() }
     }
     
-    private func setupConstraints() {
-        searchBar.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).inset(16)
-            $0.horizontalEdges.equalToSuperview().inset(14)
-        }
-        
-        recentSearchStackView.snp.makeConstraints {
-            $0.top.equalTo(searchBar.snp.bottom).offset(12)
-            $0.horizontalEdges.equalToSuperview().inset(17)
-        }
-        
-        collectionView.snp.makeConstraints {
-            $0.top.equalTo(recentSearchStackView.snp.bottom).offset(8)
-            $0.horizontalEdges.equalToSuperview().inset(16)
-            $0.height.equalTo(40)
-        }
-        
-        tableView.snp.makeConstraints {
-            $0.top.equalTo(searchBar.snp.bottom).offset(16)
-            $0.leading.trailing.bottom.equalToSuperview()
-        }
-        
-        noResultsLabel.snp.makeConstraints {
-            $0.center.equalToSuperview()
-        }
+    private func setUpAction() {
+        containerView.clearAllButton.addTarget(self, action: #selector(clearAllButtonTapped), for: .touchUpInside)
+    }
+    
+    private func setupSearchBar() {
+        containerView.searchBar.delegate = self
     }
     
     private func setupTableView() {
-        tableView.separatorStyle = .none
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.register(BookCell.self, forCellReuseIdentifier: BookCell.identifier)
+        containerView.tableView.separatorStyle = .none
+        containerView.tableView.dataSource = self
+        containerView.tableView.delegate = self
+        containerView.tableView.register(BookCell.self, forCellReuseIdentifier: BookCell.identifier)
     }
     
     private func setupCollectionView() {
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.register(RecentSearchCell.self, forCellWithReuseIdentifier: RecentSearchCell.identifier)
+        containerView.collectionView.dataSource = self
+        containerView.collectionView.delegate = self
+        containerView.collectionView.register(RecentSearchCell.self, forCellWithReuseIdentifier: RecentSearchCell.identifier)
+    }
+    
+    private func showNoResults() {
+        containerView.noResultsLabel.isHidden = false
+        containerView.tableView.isHidden = true
+    }
+    
+    private func showSearchResults() {
+        containerView.noResultsLabel.isHidden = true
+        containerView.tableView.isHidden = false
+    }
+    
+    private func hideSearchResults() {
+        containerView.noResultsLabel.isHidden = true
+        containerView.tableView.isHidden = true
     }
     
     private func fetchBooks(query: String, startIndex: Int) {
-        isLoading = true
+        viewModel.isLoading = true
         viewModel.fetchBooks(query: query, startIndex: startIndex) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let items):
                 DispatchQueue.main.async {
                     if items.isEmpty {
-                        self.noResultsLabel.isHidden = false
-                        self.tableView.isHidden = true
+                        self.showNoResults()
                     } else {
-                        self.noResultsLabel.isHidden = true
-                        self.searchResults.append(contentsOf: items)
-                        self.tableView.reloadData()
-                        self.tableView.isHidden = false
+                        self.viewModel.searchResults.append(contentsOf: items)
+                        self.containerView.tableView.reloadData()
+                        self.showSearchResults()
                     }
-                    self.isLoading = false
+                    self.viewModel.isLoading = false
                 }
             case .failure(let error):
                 print("Error: \(error)")
-                self.isLoading = false
+                self.viewModel.isLoading = false
             }
         }
     }
     
-    func loadMore() {
-        if isLoading { return }
-        isLoading = true
-        startIndex += 1
+    private func loadMore() {
+        if viewModel.isLoading { return }
+        viewModel.isLoading = true
+        viewModel.startIndex += 1
         
-        viewModel.fetchBooks(query: query, startIndex: startIndex) { [weak self] result in
+        viewModel.fetchBooks(query: viewModel.query, startIndex: viewModel.startIndex) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let items):
                 if items.isEmpty {
-                    self.isLoadingLast = true
+                    self.viewModel.isLoadingLast = true
                 } else {
-                    self.searchResults.append(contentsOf: items)
+                    self.viewModel.searchResults.append(contentsOf: items)
                     DispatchQueue.main.async {
-                        self.tableView.reloadData()
+                        self.containerView.tableView.reloadData()
                     }
                 }
             case .failure(let error):
                 print("Error: \(error)")
             }
-            self.isLoading = false
+            self.viewModel.isLoading = false
         }
     }
     
     @objc private func clearAllButtonTapped() {
         viewModel.clearRecentSearches()
-        collectionView.reloadData()
+        containerView.collectionView.reloadData()
     }
 }
 
 // MARK: - UISearchBarDelegate
 extension BookSearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        if let query = searchBar.text {
-            self.query = query
-            self.startIndex = 1
-            self.searchResults = []
-            fetchBooks(query: query, startIndex: startIndex)
-            viewModel.saveRecentSearch(query)
-            tableView.isHidden = false
-            recentSearchStackView.isHidden = true
-            collectionView.isHidden = true
-            noResultsLabel.isHidden = true
-            searchBar.resignFirstResponder()
-        }
+        guard let query = searchBar.text, !query.isEmpty else { return }
+        viewModel.query = query
+        viewModel.startIndex = 1
+        viewModel.searchResults = []
+        fetchBooks(query: query, startIndex: viewModel.startIndex)
+        viewModel.saveRecentSearch(query)
+        showSearchResults()
+        hideRecentSearches()
+        searchBar.resignFirstResponder()
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
-            self.searchResults = []
-            self.tableView.reloadData()
-            tableView.isHidden = true
-            recentSearchStackView.isHidden = false
-            collectionView.isHidden = false
+            viewModel.searchResults = []
+            containerView.tableView.reloadData()
+            hideSearchResults()
+            showRecentSearches()
         }
+    }
+    
+    private func hideRecentSearches() {
+        containerView.recentSearchStackView.isHidden = true
+        containerView.collectionView.isHidden = true
+    }
+    
+    private func showRecentSearches() {
+        containerView.recentSearchStackView.isHidden = false
+        containerView.collectionView.isHidden = false
+        containerView.collectionView.reloadData()
     }
 }
 
 // MARK: - UITableViewDataSource
 extension BookSearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchResults.count
+        return viewModel.searchResults.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: BookCell.identifier, for: indexPath) as? BookCell else {
             return UITableViewCell()
         }
-        let item = searchResults[indexPath.row]
+        let item = viewModel.searchResults[indexPath.row]
         cell.configure(with: item)
         return cell
     }
@@ -264,14 +181,13 @@ extension BookSearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let item = searchResults[indexPath.row]
-        
+        let item = viewModel.searchResults[indexPath.row]
         delegate?.didSelectBook(item)
         dismiss(animated: true, completion: nil)
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row == searchResults.count - 1 && !isLoading {
+        if indexPath.row == viewModel.searchResults.count - 1 && !viewModel.isLoading {
             loadMore()
         }
     }
@@ -287,13 +203,8 @@ extension BookSearchViewController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecentSearchCell.identifier, for: indexPath) as? RecentSearchCell else {
             return UICollectionViewCell()
         }
-        
         let recentSearches = viewModel.loadRecentSearches()
         cell.configure(with: recentSearches[indexPath.item], viewModel: viewModel)
-        cell.layer.cornerRadius = 14
-        cell.clipsToBounds = true
-        cell.layer.borderColor = UIColor.lightSkyBlue.cgColor
-        cell.layer.borderWidth = 2
         return cell
     }
 }
@@ -302,9 +213,9 @@ extension BookSearchViewController: UICollectionViewDataSource {
 extension BookSearchViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let recentSearches = viewModel.loadRecentSearches()
-        searchBar.text = recentSearches[indexPath.item]
-        searchBarSearchButtonClicked(searchBar)
-        collectionView.reloadData()
+        containerView.searchBar.text = recentSearches[indexPath.item]
+        searchBarSearchButtonClicked(containerView.searchBar)
+        containerView.collectionView.reloadData()
     }
 }
 

@@ -5,7 +5,6 @@
 //  Created by 한철희 on 6/17/24.
 //
 
-import BetterSegmentedControl
 import Kingfisher
 import SnapKit
 import Then
@@ -13,7 +12,7 @@ import UIKit
 
 class AddPassageContainerView: UIView {
     
-    // MARK: - Properties
+    // MARK: - UI
     let scanButton = UIButton(configuration: .filled(), primaryAction: nil).then {
         $0.configurationUpdateHandler = { button in
             var configuration = button.configuration
@@ -33,11 +32,9 @@ class AddPassageContainerView: UIView {
         $0.clipsToBounds = true
     }
     
-    let infoView = UIView().then {
-        $0.layer.cornerRadius = 15
-    }
+    let infoView = InfoView()
     
-    let overlayView = UIView().then {
+    let infoViewOverLapView = UIView().then {
         $0.backgroundColor = UIColor.lightSkyBlue.withAlphaComponent(0.5)
         $0.layer.cornerRadius = 15
     }
@@ -45,42 +42,20 @@ class AddPassageContainerView: UIView {
     let searchButton = UIButton(type: .system).then {
         var config = UIButton.Configuration.filled()
         config.title = "책 검색"
-        $0.titleLabel?.font = Pretendard.semibold.dynamicFont(style: .headline)
         config.baseForegroundColor = .white
         config.baseBackgroundColor = .charcoalBlue
         config.image = .magnifyingglass
         config.imagePadding = 8
         config.imagePlacement = .leading
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 15)
+        $0.titleLabel?.font = Pretendard.semibold.dynamicFont(style: .headline)
         $0.configuration = config
         $0.layer.cornerRadius = 15
         $0.clipsToBounds = true
         $0.titleLabel?.numberOfLines = 1
     }
-    
-    var imageView = UIImageView().then {
-        $0.image = UIImage(resource: .empty).withRenderingMode(.alwaysTemplate)
-        $0.tintColor = .buttonLightGray
-        $0.layer.cornerRadius = 15
-        $0.clipsToBounds = true
-        $0.contentMode = .scaleAspectFit
-    }
-    
-    var titleLabel = UILabel().then {
-        $0.text = "책 제목"
-        $0.font = Pretendard.bold.dynamicFont(style: .body)
-        $0.textColor = .bookTextGray
-        $0.numberOfLines = 2
-    }
-    
-    var authorLabel = UILabel().then {
-        $0.text = "저자"
-        $0.font = Pretendard.bold.dynamicFont(style: .body)
-        $0.textColor = .bookTextGray
-        $0.numberOfLines = 2
-    }
-    
-    let overlapView = UIView().then {
+
+    let textViewBoder = UIView().then {
         $0.backgroundColor = .clear
         $0.layer.borderWidth = 1.0
         $0.layer.borderColor = UIColor.lightGray.withAlphaComponent(0.7).cgColor
@@ -101,7 +76,7 @@ class AddPassageContainerView: UIView {
     }
     
     let characterCountLabel = UILabel().then {
-        $0.textColor = .gray
+        $0.textColor = .textFieldGray
         $0.font = Pretendard.bold.dynamicFont(style: .footnote)
     }
     
@@ -111,16 +86,16 @@ class AddPassageContainerView: UIView {
     }
     
     let keywordLabel = UILabel().then {
-        $0.attributedText = AddPassageViewController.createAttributedString(for: "키워드 (선택)")
+        $0.attributedText = createAttributedString(for: "키워드 (선택)")
         $0.textAlignment = .left
     }
     
     let keywordField = UITextField().then {
-        let placeholder = "키워드를 입력해 주세요"
+        $0.placeholder = "키워드를 입력해 주세요"
         $0.font = Pretendard.regular.dynamicFont(style: .subheadline)
-        $0.placeholder = placeholder
-        $0.clipsToBounds = true
+        $0.textColor = .textFieldGray
         $0.layer.cornerRadius = 10
+        $0.clipsToBounds = true
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor.borderGray.cgColor
     }
@@ -144,6 +119,7 @@ class AddPassageContainerView: UIView {
     
     let pageNumberTextField = UITextField().then {
         $0.placeholder = "페이지"
+        $0.textColor = .textFieldGray
         $0.textAlignment = .center
         $0.font = Pretendard.regular.dynamicFont(style: .subheadline)
         $0.borderStyle = .roundedRect
@@ -153,13 +129,8 @@ class AddPassageContainerView: UIView {
         $0.selectedIndex = 0
     }
     
-    let recordButton = UIButton().then {
-        $0.setTitle("기록 하기", for: .normal)
-        $0.titleLabel?.font = Pretendard.bold.dynamicFont(style: .headline)
-        $0.setTitleColor(.white, for: .normal)
-        $0.backgroundColor = .charcoalBlue
-        $0.layer.cornerRadius = 15
-        $0.clipsToBounds = true
+    let recordButton = AddPassageButton().then {
+        $0.setButtonTitle("기록 하기")
     }
     
     // MARK: - Lifecycle
@@ -167,6 +138,7 @@ class AddPassageContainerView: UIView {
         super.init(frame: frame)
         setupViews()
         initLayout()
+        setkeywordTextField()
     }
     
     required init?(coder: NSCoder) {
@@ -175,31 +147,16 @@ class AddPassageContainerView: UIView {
     
     // MARK: - setupViews
     private func setupViews() {
-        addSubview(scanButton)
-        addSubview(infoView)
-        infoView.addSubview(imageView)
-        infoView.addSubview(titleLabel)
-        infoView.addSubview(authorLabel)
-        infoView.addSubview(overlayView)
-        overlayView.addSubview(searchButton)
-        addSubview(overlapView)
-        addSubview(verseTextView)
-        addSubview(characterCountLabel)
-        addSubview(pencilImageView)
-        addSubview(keywordLabel)
-        addSubview(keywordField)
-        addSubview(keywordCollectionView)
-        addSubview(pageLabel)
-        addSubview(pageNumberTextField)
-        addSubview(pageSegment)
-        addSubview(recordButton)
+        [scanButton, infoView, textViewBoder, verseTextView, characterCountLabel, pencilImageView, keywordLabel, keywordField, keywordCollectionView, pageLabel, pageNumberTextField, pageSegment, recordButton].forEach { addSubview($0) }
+        
+        infoView.addSubview(infoViewOverLapView)
+        infoViewOverLapView.addSubview(searchButton)
     }
     
     // MARK: - 제약조건
     private func initLayout() {
         scanButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(16)
-            $0.trailing.equalToSuperview().offset(-16)
+            $0.top.trailing.equalToSuperview().inset(16)
         }
         
         infoView.snp.makeConstraints {
@@ -208,7 +165,7 @@ class AddPassageContainerView: UIView {
             $0.height.equalTo(200)
         }
         
-        overlayView.snp.makeConstraints {
+        infoViewOverLapView.snp.makeConstraints {
             $0.edges.equalTo(infoView)
         }
         
@@ -216,30 +173,11 @@ class AddPassageContainerView: UIView {
             $0.center.equalToSuperview()
             $0.height.equalTo(35)
         }
-        
-        imageView.snp.makeConstraints {
-            $0.leading.equalTo(infoView.snp.leading)
-            $0.centerY.equalTo(infoView.snp.centerY)
-            $0.width.equalTo(103)
-            $0.height.equalTo(146)
-        }
-        
-        titleLabel.snp.makeConstraints {
-            $0.centerY.equalTo(infoView.snp.centerY).offset(-16)
-            $0.leading.equalTo(imageView.snp.trailing).offset(16)
-            $0.trailing.equalTo(infoView.snp.trailing).offset(-16)
-        }
-        
-        authorLabel.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(16)
-            $0.leading.equalTo(imageView.snp.trailing).offset(16)
-            $0.trailing.equalTo(infoView.snp.trailing).offset(-16)
-        }
-        
-        overlapView.snp.makeConstraints {
+
+        textViewBoder.snp.makeConstraints {
             $0.top.equalTo(infoView.snp.bottom).offset(32)
             $0.horizontalEdges.equalToSuperview().inset(16)
-            $0.height.equalTo(329) // 원하는 높이로 설정
+            $0.height.equalTo(329)
         }
         
         verseTextView.snp.makeConstraints {
@@ -249,17 +187,15 @@ class AddPassageContainerView: UIView {
         }
         
         characterCountLabel.snp.makeConstraints {
-            $0.trailing.equalTo(overlapView.snp.trailing).offset(-16)
-            $0.bottom.equalTo(overlapView.snp.bottom).offset(-16)
+            $0.trailing.bottom.equalTo(textViewBoder).inset(16)
         }
         
         pencilImageView.snp.makeConstraints {
-            $0.bottom.equalTo(overlapView.snp.bottom).offset(-8)
-            $0.leading.equalTo(overlapView.snp.leading).offset(8)
+            $0.leading.bottom.equalTo(textViewBoder).inset(16)
         }
         
         keywordLabel.snp.makeConstraints {
-            $0.top.equalTo(overlapView.snp.bottom).offset(32)
+            $0.top.equalTo(textViewBoder.snp.bottom).offset(32)
             $0.horizontalEdges.equalToSuperview().inset(16)
         }
         
@@ -289,7 +225,7 @@ class AddPassageContainerView: UIView {
         
         pageSegment.snp.makeConstraints {
             $0.centerY.equalTo(pageLabel.snp.centerY)
-            $0.trailing.equalToSuperview().offset(-16)
+            $0.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(30)
             $0.width.equalTo(120)
         }
@@ -297,8 +233,31 @@ class AddPassageContainerView: UIView {
         recordButton.snp.makeConstraints {
             $0.top.equalTo(pageLabel.snp.bottom).offset(60)
             $0.horizontalEdges.equalToSuperview().inset(16)
-            $0.centerX.equalToSuperview()
             $0.height.equalTo(50)
         }
+    }
+    
+    func setkeywordTextField() {
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: keywordField.frame.height))
+        keywordField.leftView = paddingView
+        keywordField.leftViewMode = .always
+        keywordField.rightView = paddingView
+        keywordField.rightViewMode = .always
+    }
+}
+
+extension AddPassageContainerView {
+    static func createAttributedString(for text: String) -> NSAttributedString {
+        let attributedString = NSMutableAttributedString(string: text)
+        
+        // "키워드" 부분 설정
+        let keywordRange = (text as NSString).range(of: "키워드")
+        attributedString.addAttributes([.font: Pretendard.semibold.dynamicFont(style: .headline)], range: keywordRange)
+        
+        // "(선택)" 부분 설정
+        let selectionRange = (text as NSString).range(of: "(선택)")
+        attributedString.addAttributes([.font: Pretendard.regular.dynamicFont(style: .headline), .foregroundColor: UIColor.gray], range: selectionRange)
+        
+        return attributedString
     }
 }

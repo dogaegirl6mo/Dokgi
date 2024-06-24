@@ -10,74 +10,35 @@ import RxCocoa
 import SnapKit
 import UIKit
 
-class HomeViewController: UIViewController {
+class HomeViewController: UIViewController, HomeViewDelegate {
  
     let disposeBag = DisposeBag()
     let viewModel = HomeViewModel()
-    lazy var verese = viewModel.verses.value
-
-    let scrollView = UIScrollView()
-    let contentView = UIView()
-    
-    let settingButton = UIButton()
-    let currentLengthLabel = UILabel()
-    let currentLevelCollectionView: UICollectionView = {
-        let layout = CurrentLevelCollectionFlowLayout()
-        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        view.showsHorizontalScrollIndicator = false
-        view.backgroundColor = .clear
-        view.clipsToBounds = true
-        view.register(CurrentLevelCell.self, forCellWithReuseIdentifier: CurrentLevelCell.identifier)
-        view.decelerationRate = .fast
-        return view
-    }()
-    
-    let nextLengthLabel = UILabel()
-    let lengthSlider = UISlider()
-    let currentLevelBubble = UIImageView()
-    let currentLevelImage = UIImageView()
-    let nextLevelBubble = UIImageView()
-    let questionMark = UILabel()
-    
-    let todayVersesLabel = UILabel()
-    let todayVersesColletionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 0
-        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        view.showsHorizontalScrollIndicator = false
-        view.backgroundColor = .clear
-        view.isPagingEnabled = true
-        view.register(TodayPassageCell.self, forCellWithReuseIdentifier: TodayPassageCell.identifier)
-        return view
-    }()
+    let homeView = HomeView()
             
     var levelCollectionViewSelectedIndex = 0
     var nowPage: Int = 0 {
         didSet {
-            self.indicatorDots.currentPage = nowPage
+            self.homeView.indicatorDots.currentPage = nowPage
         }
     }
-    
-    var indicatorDots = UIPageControl()
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupConstraints()
-        configureUI()
         setupCollectionView()
         bindViewModel()
         bannerTimer()
         setFloatingButton()
-        
         CoreDataManager.shared.readData() // 추가된 구절 반영
+        homeView.delegate = self
+        homeView.setConfigureUI(viewModel: viewModel)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        currentLevelBubble.snp.makeConstraints {
-            $0.centerX.equalTo(self.lengthSlider.snp.leading).offset(self.lengthSlider.frame.width * CGFloat(lengthSlider.value))
+        homeView.currentLevelBubble.snp.makeConstraints {
+            $0.centerX.equalTo(self.homeView.lengthSlider.snp.leading).offset(self.homeView.lengthSlider.frame.width * CGFloat(homeView.lengthSlider.value))
         }
     }
     
@@ -89,151 +50,25 @@ class HomeViewController: UIViewController {
     }
     
     func setupConstraints() {
-        view.addSubview(scrollView)
-        scrollView.addSubview(contentView)
-        [settingButton,
-         currentLengthLabel,
-         currentLevelCollectionView,
-         nextLengthLabel,
-         lengthSlider,
-         currentLevelBubble,
-         nextLevelBubble,
-         todayVersesLabel,
-         todayVersesColletionView,
-         indicatorDots].forEach {
-            contentView.addSubview($0)
-        }
-        
-        currentLevelBubble.addSubview(currentLevelImage)
-        nextLevelBubble.addSubview(questionMark)
-        
-        scrollView.snp.makeConstraints {
-            $0.top.equalTo(self.view.safeAreaLayoutGuide)
-            $0.horizontalEdges.bottom.equalToSuperview()
-        }
-        
-        contentView.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.horizontalEdges.bottom.width.equalToSuperview()
-        }
-        
-        settingButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(3)
-            $0.trailing.equalToSuperview().offset(-24)
-        }
-        
-        currentLengthLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(58)
-            $0.leading.equalToSuperview().offset(29)
-        }
-        
-        currentLevelCollectionView.snp.makeConstraints {
-            $0.top.equalTo(currentLengthLabel.snp.bottom).offset(15)
-            $0.leading.trailing.equalToSuperview()
-            $0.centerX.equalToSuperview()
-            $0.height.equalTo(200)
-        }
-        
-        nextLengthLabel.snp.makeConstraints {
-            $0.top.equalTo(currentLevelCollectionView.snp.bottom).offset(20)
-            $0.horizontalEdges.equalToSuperview().inset(35)
-        }
-        
-        lengthSlider.snp.makeConstraints {
-            $0.horizontalEdges.equalToSuperview().inset(35)
-            $0.top.equalTo(nextLengthLabel.snp.bottom).offset(18)
-        }
-        
-        currentLevelBubble.snp.makeConstraints {
-            $0.width.equalTo(38)
-            $0.height.equalTo(41)
-            $0.top.equalTo(lengthSlider.snp.bottom)
-            $0.centerX.equalTo(lengthSlider.snp.trailing).multipliedBy(1)
-        }
-        
-        currentLevelImage.snp.makeConstraints {
-            $0.width.height.equalTo(28)
-            $0.centerX.equalToSuperview()
-            $0.centerY.equalToSuperview().offset(1)
-        }
-        
-        nextLevelBubble.snp.makeConstraints {
-            $0.width.equalTo(38)
-            $0.height.equalTo(41)
-            $0.top.equalTo(lengthSlider.snp.bottom)
-            $0.trailing.equalTo(lengthSlider.snp.trailing).offset(17)
-        }
-        
-        questionMark.snp.makeConstraints {
-            $0.centerX.centerY.equalToSuperview().offset(0.5)
-        }
-        
-        todayVersesLabel.snp.makeConstraints {
-            $0.top.equalTo(currentLevelBubble.snp.bottom).offset(53)
-            $0.leading.equalTo(currentLengthLabel.snp.leading)
-        }
-        
-        todayVersesColletionView.snp.makeConstraints {
-            $0.top.equalTo(todayVersesLabel.snp.bottom).offset(14)
-            $0.bottom.equalToSuperview().offset(-63)
-            $0.horizontalEdges.equalToSuperview().inset(20)
-            $0.centerX.equalToSuperview()
-            $0.height.equalTo(158)
-        }
-        
-        indicatorDots.snp.makeConstraints {
-            $0.centerX.equalTo(todayVersesColletionView.snp.centerX)
-            $0.bottom.equalTo(todayVersesColletionView.snp.bottom).offset(-8)
-        }
-    }
-    
-    func configureUI() {
         view.backgroundColor = .white
-        scrollView.showsVerticalScrollIndicator = false
-        settingButton.setImage(.setting, for: .normal)
-        settingButton.tintColor = .charcoalBlue
-        settingButton.addTarget(self, action: #selector(didTapSetting), for: .touchUpInside)
-        currentLengthLabel.text = "현재 구절 길이"
-        currentLengthLabel.font = Pretendard.semibold.dynamicFont(style: .title3)
-        nextLengthLabel.text = "다음 레벨까지 \(Int(Float(viewModel.currentLevelPercent.value) * 100)) % 달성했습니다!"
-        nextLengthLabel.font = Pretendard.regular.dynamicFont(style: .subheadline)
-        if let thumbImage = UIImage(named: "currentThum") {
-            lengthSlider.setThumbImage(thumbImage, for: .normal)
-            lengthSlider.setThumbImage(thumbImage, for: .highlighted)
+        view.addSubview(homeView)
+        homeView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
-        lengthSlider.isUserInteractionEnabled = false
-        currentLevelBubble.image = .speechBubble1
-        currentLevelBubble.clipsToBounds = true
-        currentLevelImage.backgroundColor = .clear
-        currentLevelImage.image = .grape
-        currentLevelImage.layer.masksToBounds = true
-        currentLevelImage.contentMode = .scaleAspectFit
-        nextLevelBubble.image = .speechBubble2
-        nextLevelBubble.clipsToBounds = true
-        nextLevelBubble.layer.masksToBounds = true
-        questionMark.font = .systemFont(ofSize: 30, weight: .heavy)
-        questionMark.textColor = .deepSkyBlue
-        questionMark.text = "?"
-        questionMark.textAlignment = .center
-        todayVersesLabel.text = "오늘의 구절"
-        todayVersesLabel.font = Pretendard.semibold.dynamicFont(style: .title3)
-        todayVersesColletionView.layer.cornerRadius = 10
-        indicatorDots.pageIndicatorTintColor = UIColor(.dotGray).withAlphaComponent(0.3)
-        indicatorDots.currentPageIndicatorTintColor = UIColor(.dotBlue)
-        indicatorDots.numberOfPages = viewModel.randomVerses.value.count
     }
 
     func setupCollectionView() {
-        currentLevelCollectionView.dataSource = self
-        currentLevelCollectionView.delegate = self
-        todayVersesColletionView.dataSource = self
-        todayVersesColletionView.delegate = self
-        currentLevelCollectionView.layoutIfNeeded() // 레이아웃 새로고침
-        currentLevelCollectionView.reloadData()
+        homeView.currentLevelCollectionView.dataSource = self
+        homeView.currentLevelCollectionView.delegate = self
+        homeView.todayVersesColletionView.dataSource = self
+        homeView.todayVersesColletionView.delegate = self
+        homeView.todayVersesColletionView.register(TodayPassageCell.self, forCellWithReuseIdentifier: TodayPassageCell.identifier)
+        homeView.currentLevelCollectionView.register(CurrentLevelCell.self, forCellWithReuseIdentifier: CurrentLevelCell.identifier)
+        homeView.currentLevelCollectionView.layoutIfNeeded() // 레이아웃 새로고침
+        homeView.currentLevelCollectionView.reloadData()
     }
     
     func bindViewModel() {
-        
         // 현재 레벨
         viewModel.currentLevel
             .subscribe(onNext: { [ weak self ] value in
@@ -245,12 +80,12 @@ class HomeViewController: UIViewController {
         viewModel.currentLevelPercent
             .subscribe(onNext: { [ weak self ] value in
                 guard let self else { return }
-                self.lengthSlider.value = Float(value)
-                nextLengthLabel.text = "다음 레벨까지 \(Int(Float(viewModel.currentLevelPercent.value) * 100)) % 달성했습니다!"
-                self.currentLevelBubble.snp.remakeConstraints {
+                self.homeView.lengthSlider.value = Float(value)
+                homeView.nextLengthLabel.text = "다음 레벨까지 \(Int(Float(viewModel.currentLevelPercent.value) * 100)) % 달성했습니다!"
+                self.homeView.currentLevelBubble.snp.remakeConstraints {
                     $0.width.equalTo(38)
                     $0.height.equalTo(41)
-                    $0.top.equalTo(self.lengthSlider.snp.bottom)
+                    $0.top.equalTo(self.homeView.lengthSlider.snp.bottom)
                 }
             })
             .disposed(by: disposeBag)
@@ -258,15 +93,15 @@ class HomeViewController: UIViewController {
         // 현재 레벨 이미지
         viewModel.currentLevelImage
             .subscribe(onNext: { [ weak self ] image in
-                self?.currentLevelImage.image = image
+                self?.homeView.currentLevelImage.image = image
             })
             .disposed(by: disposeBag)
         
         // 구절 랜덤 5개
         viewModel.randomVerses
             .subscribe(onNext: { [weak self] value in
-                self?.todayVersesColletionView.reloadData()
-                self?.indicatorDots.numberOfPages = value.count
+                self?.homeView.todayVersesColletionView.reloadData()
+                self?.homeView.indicatorDots.numberOfPages = value.count
             })
             .disposed(by: viewModel.disposeBag)
     }
@@ -275,11 +110,10 @@ class HomeViewController: UIViewController {
         let index = max(0, min(level - 1, viewModel.levelCards.count - 1))
         let indexPath = IndexPath(item: index, section: 0)
         
-        currentLevelCollectionView.reloadData() // 데이터 업데이트시 콜렉션뷰 리로드
-        currentLevelCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: animated)
+        homeView.currentLevelCollectionView.reloadData() // 데이터 업데이트시 콜렉션뷰 리로드
+        homeView.currentLevelCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: animated)
     
         levelCollectionViewSelectedIndex = index
-        
         updateCurrentLevelCollectionViewCell()
     }
     
@@ -288,9 +122,9 @@ class HomeViewController: UIViewController {
         let currIndex = levelCollectionViewSelectedIndex
         let nextIndex = min(levelCollectionViewSelectedIndex + 1, viewModel.levelCards.count - 1)
         
-        let prevCell = currentLevelCollectionView.cellForItem(at: IndexPath(row: Int(prevIndex), section: 0))
-        let currCell = currentLevelCollectionView.cellForItem(at: IndexPath(row: Int(currIndex), section: 0))
-        let nextCell = currentLevelCollectionView.cellForItem(at: IndexPath(row: Int(nextIndex), section: 0))
+        let prevCell = homeView.currentLevelCollectionView.cellForItem(at: IndexPath(row: Int(prevIndex), section: 0))
+        let currCell = homeView.currentLevelCollectionView.cellForItem(at: IndexPath(row: Int(currIndex), section: 0))
+        let nextCell = homeView.currentLevelCollectionView.cellForItem(at: IndexPath(row: Int(nextIndex), section: 0))
         
         if prevIndex != currIndex { prevCell?.transformToSmall() }
         currCell?.transformToStandard()
@@ -305,7 +139,6 @@ class HomeViewController: UIViewController {
     }
     // 배너 움직이는 매서드
     func bannerMove() {
-        
         if nowPage == viewModel.randomVerses.value.count - 1 {
             scrollToFirstPage()
         } else if viewModel.randomVerses.value.count > nowPage {
@@ -315,18 +148,18 @@ class HomeViewController: UIViewController {
     
     // 첫번째 페이지로 이동
     func scrollToFirstPage() {
-        todayVersesColletionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .right, animated: true)
+        homeView.todayVersesColletionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .right, animated: true)
         nowPage = 0
     }
 
     // 다음 페이지 이동
     func scrollNextToPage(_ page: Int) {
         nowPage += 1
-        todayVersesColletionView.scrollToItem(at: IndexPath(item: nowPage, section: 0), at: .right, animated: true)
+        homeView.todayVersesColletionView.scrollToItem(at: IndexPath(item: nowPage, section: 0), at: .right, animated: true)
     }
     
     // 홈 상단에 설정 페이지 이동
-    @objc func didTapSetting() {
+    func didTapSettingButton() {
         let settingVC = SettingViewController()
         self.navigationController?.pushViewController(settingVC, animated: true)
         settingVC.tabBarController?.tabBar.isHidden = true
@@ -336,10 +169,10 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if collectionView == currentLevelCollectionView {
+        if collectionView == homeView.currentLevelCollectionView {
             let currentLevel = viewModel.currentLevel
             return min(currentLevel.value + 1, viewModel.levelCards.count)
-        } else if collectionView == todayVersesColletionView {
+        } else if collectionView == homeView.todayVersesColletionView {
             
             switch viewModel.randomVerses.value.count {
             case 1...4:
@@ -354,7 +187,7 @@ extension HomeViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if collectionView == currentLevelCollectionView {
+        if collectionView == homeView.currentLevelCollectionView {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CurrentLevelCell.identifier, for: indexPath) as? CurrentLevelCell else { return UICollectionViewCell() }
             
             cell.setCellConfig(viewModel.levelCards[indexPath.item])
@@ -397,7 +230,7 @@ extension HomeViewController: UICollectionViewDataSource {
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // 컬렉션 뷰의 크기에 맞게 셀 크기 설정
-        if collectionView == todayVersesColletionView {
+        if collectionView == homeView.todayVersesColletionView {
             return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)
         } else {
             return CGSize(width: 300, height: 164)
@@ -408,19 +241,19 @@ extension HomeViewController: UICollectionViewDelegate {
 extension HomeViewController: UICollectionViewDelegateFlowLayout {
     // 현재 드래그 되는 셀 작아지게
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        let currentCell = currentLevelCollectionView.cellForItem(at: IndexPath(row: Int(levelCollectionViewSelectedIndex), section: 0))
+        let currentCell = homeView.currentLevelCollectionView.cellForItem(at: IndexPath(row: Int(levelCollectionViewSelectedIndex), section: 0))
         currentCell?.transformToSmall()
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         
-        if scrollView == currentLevelCollectionView {
-            guard scrollView == currentLevelCollectionView else { return }
+        if scrollView == homeView.currentLevelCollectionView {
+            guard scrollView == homeView.currentLevelCollectionView else { return }
             
             // pointee == 스크롤 도착 좌표
             targetContentOffset.pointee = scrollView.contentOffset
             
-            let flowLayout = currentLevelCollectionView.collectionViewLayout as! CurrentLevelCollectionFlowLayout
+            let flowLayout = homeView.currentLevelCollectionView.collectionViewLayout as! CurrentLevelCollectionFlowLayout
             let cellWidthIncludingSpacing = flowLayout.itemSize.width + flowLayout.minimumLineSpacing
             let offset = targetContentOffset.pointee
             let horizontalVelocity = velocity.x
@@ -445,56 +278,18 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
             
             let safeIndex = max(0, min(selectedIndex, viewModel.currentLevel.value))
             let selectedIndexPath = IndexPath(item: safeIndex, section: 0)
-            currentLevelCollectionView.scrollToItem(at: selectedIndexPath, at: .centeredHorizontally, animated: true)
+            homeView.currentLevelCollectionView.scrollToItem(at: selectedIndexPath, at: .centeredHorizontally, animated: true)
             
             levelCollectionViewSelectedIndex = selectedIndexPath.item
             
             updateCurrentLevelCollectionViewCell()
-        } else if scrollView == todayVersesColletionView {
+        } else if scrollView == homeView.todayVersesColletionView {
             // 사용자가 오늘의 구절을 넘겼을 때
             let pageWidth = scrollView.frame.size.width
             let targetXContentOffset = targetContentOffset.pointee.x
             let page = Int(targetXContentOffset / pageWidth)
-            self.indicatorDots.currentPage = page
+            self.homeView.indicatorDots.currentPage = page
             self.nowPage = page
         }
     }
 }
-
-extension UICollectionViewCell {
-    // 셀이 작아지게 설정
-    func transformToSmall() {
-        UIView.animate(withDuration: 0.2) {
-            self.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
-        }
-    }
-    
-    // 기본 셀 크기로 지정
-    func transformToStandard() {
-        UIView.animate(withDuration: 0.2) {
-            self.transform = CGAffineTransform.identity
-        }
-    }
-}
-
-extension UIViewController {
-    func setFloatingButton() {
-        let floatButton = FloatButton()
-        view.addSubview(floatButton)
-        
-        floatButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-25)
-            $0.bottom.equalTo(self.view.safeAreaLayoutGuide).offset(-40)
-            $0.width.height.equalTo(70)
-        }
-        
-        floatButton.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
-    }
-    
-    @objc func didTapButton() {
-        let addVC = AddPassageViewController()
-        self.navigationController?.pushViewController(addVC, animated: true)
-    }
-}
-
-

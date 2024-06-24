@@ -22,6 +22,9 @@
 		7B487B102C251A380082EF92 /* PassageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B487B0F2C251A380082EF92 /* PassageView.swift */; };
 		7B487B122C2590130082EF92 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B487B112C2590130082EF92 /* LibraryView.swift */; };
 		7B487B142C25922A0082EF92 /* LibraryCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B487B132C25922A0082EF92 /* LibraryCollectionView.swift */; };
+		3C9AD89A2C2462B0007393C1 /* FloatingButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C9AD8992C2462B0007393C1 /* FloatingButtonViewController.swift */; };
+		3C9AD89C2C24634E007393C1 /* UICollectionViewCellExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C9AD89B2C24634E007393C1 /* UICollectionViewCellExtension.swift */; };
+		3C9AD8C32C25A4FC007393C1 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C9AD8C22C25A4FC007393C1 /* HomeView.swift */; };
 		7BE488A92C0F267000BDB92A /* LibraryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE488A82C0F267000BDB92A /* LibraryViewController.swift */; };
 		7BE488AF2C103E5A00BDB92A /* LibraryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE488AE2C103E5A00BDB92A /* LibraryCollectionViewCell.swift */; };
 		7BE488B32C16E29C00BDB92A /* PassageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE488B22C16E29C00BDB92A /* PassageViewController.swift */; };
@@ -29,6 +32,12 @@
 		7BE488B72C171BC500BDB92A /* PassageCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE488B62C171BC400BDB92A /* PassageCollectionViewLayout.swift */; };
 		8500B52E2C203A4500A0EB38 /* PassageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8500B52D2C203A4500A0EB38 /* PassageViewModel.swift */; };
 		854E157E2C244FCA00FE5256 /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854E157D2C244FCA00FE5256 /* BaseViewModel.swift */; };
+		854E15802C24828D00FE5256 /* BaseAlarmSettingSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854E157F2C24828D00FE5256 /* BaseAlarmSettingSheetViewController.swift */; };
+		854E15842C2495A500FE5256 /* BaseLibraryAndPassageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854E15832C2495A500FE5256 /* BaseLibraryAndPassageViewController.swift */; };
+		854E15862C24A67E00FE5256 /* SortButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854E15852C24A67E00FE5256 /* SortButton.swift */; };
+		854E15882C25534700FE5256 /* SortMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854E15872C25534700FE5256 /* SortMenuView.swift */; };
+		854E158A2C25AE3E00FE5256 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854E15892C25AE3E00FE5256 /* SearchBar.swift */; };
+		854E158E2C25F2FE00FE5256 /* AddPassageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854E158D2C25F2FE00FE5256 /* AddPassageButton.swift */; };
 		855318BB2C16E56800340ACF /* BookDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 855318BA2C16E56800340ACF /* BookDetailViewController.swift */; };
 		855318C12C17FAD800340ACF /* PassageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 855318C02C17FAD800340ACF /* PassageTableViewCell.swift */; };
 		855318C62C1AEBF900340ACF /* BookDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 855318C52C1AEBF900340ACF /* BookDetailViewModel.swift */; };
@@ -72,6 +81,7 @@
 		A75D3D732C1A11C7006C2EB3 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74874822C0D7ED100B830EE /* PaddingLabel.swift */; };
 		A75D3D752C1B47D1006C2EB3 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75D3D742C1B47D1006C2EB3 /* StringExtension.swift */; };
 		A75D3D772C1B493F006C2EB3 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75D3D762C1B493F006C2EB3 /* DateExtension.swift */; };
+		A774B63D2C2943EB00F43394 /* TextFieldExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A774B63C2C2943EB00F43394 /* TextFieldExtension.swift */; };
 		A78D2A1C2C216FCF00F8AC72 /* LibraryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A78D2A1B2C216FCF00F8AC72 /* LibraryViewModel.swift */; };
 		A7F2DB192C134B200020B0AA /* PassageDetailContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F2DB182C134B200020B0AA /* PassageDetailContainerView.swift */; };
 		A7F2DB1D2C15C6E70020B0AA /* KeywordCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F2DB1C2C15C6E70020B0AA /* KeywordCollectionViewCell.swift */; };
@@ -81,15 +91,17 @@
 		AB23869F2C19B5FC00E6FACE /* VerseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB23869E2C19B5FC00E6FACE /* VerseModel.swift */; };
 		AB2386A22C1A0CDB00E6FACE /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AB2386A12C1A0CDB00E6FACE /* IQKeyboardManagerSwift */; };
 		AB2386A52C1AF1A100E6FACE /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = AB355D572C180D8F00B3DE16 /* Kingfisher */; };
-		AB2386A82C1B021D00E6FACE /* BetterSegmentedControl in Frameworks */ = {isa = PBXBuildFile; productRef = AB2386A72C1B021D00E6FACE /* BetterSegmentedControl */; };
 		AB2386B22C1FE9F000E6FACE /* AddPassageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2386B12C1FE9F000E6FACE /* AddPassageViewModel.swift */; };
 		AB355D552C180C9700B3DE16 /* BookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB355D542C180C9700B3DE16 /* BookCell.swift */; };
 		AB355D5B2C18725400B3DE16 /* KeywordCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB355D5A2C18725400B3DE16 /* KeywordCell.swift */; };
 		AB4BDC042C20394C001FDA8F /* AddPassageContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4BDC032C20394C001FDA8F /* AddPassageContainerView.swift */; };
 		AB4BDC062C216BF7001FDA8F /* RecentSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4BDC052C216BF7001FDA8F /* RecentSearchCell.swift */; };
 		AB4BDC0A2C219C6F001FDA8F /* BookSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4BDC092C219C6F001FDA8F /* BookSearchViewModel.swift */; };
+		AB4BDC0C2C249608001FDA8F /* addSubviewsExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4BDC0B2C249608001FDA8F /* addSubviewsExtension.swift */; };
+		AB4BDC0E2C249F1B001FDA8F /* BookSearchContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4BDC0D2C249F1B001FDA8F /* BookSearchContainerView.swift */; };
 		AB66D3442C0EEFE3000D72DA /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB66D3432C0EEFE3000D72DA /* TabBarViewController.swift */; };
 		AB66D3692C17688C000D72DA /* BookSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB66D3682C17688C000D72DA /* BookSearchViewController.swift */; };
+		ABEB97222C28FA5C00501696 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEB97212C28FA5C00501696 /* InfoView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +144,9 @@
 		7B487B0F2C251A380082EF92 /* PassageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassageView.swift; sourceTree = "<group>"; };
 		7B487B112C2590130082EF92 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
 		7B487B132C25922A0082EF92 /* LibraryCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryCollectionView.swift; sourceTree = "<group>"; };
+		3C9AD8992C2462B0007393C1 /* FloatingButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingButtonViewController.swift; sourceTree = "<group>"; };
+		3C9AD89B2C24634E007393C1 /* UICollectionViewCellExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionViewCellExtension.swift; sourceTree = "<group>"; };
+		3C9AD8C22C25A4FC007393C1 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		7BE488A82C0F267000BDB92A /* LibraryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewController.swift; sourceTree = "<group>"; };
 		7BE488AE2C103E5A00BDB92A /* LibraryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryCollectionViewCell.swift; sourceTree = "<group>"; };
 		7BE488B22C16E29C00BDB92A /* PassageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassageViewController.swift; sourceTree = "<group>"; };
@@ -139,6 +154,12 @@
 		7BE488B62C171BC400BDB92A /* PassageCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassageCollectionViewLayout.swift; sourceTree = "<group>"; };
 		8500B52D2C203A4500A0EB38 /* PassageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassageViewModel.swift; sourceTree = "<group>"; };
 		854E157D2C244FCA00FE5256 /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
+		854E157F2C24828D00FE5256 /* BaseAlarmSettingSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAlarmSettingSheetViewController.swift; sourceTree = "<group>"; };
+		854E15832C2495A500FE5256 /* BaseLibraryAndPassageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseLibraryAndPassageViewController.swift; sourceTree = "<group>"; };
+		854E15852C24A67E00FE5256 /* SortButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortButton.swift; sourceTree = "<group>"; };
+		854E15872C25534700FE5256 /* SortMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortMenuView.swift; sourceTree = "<group>"; };
+		854E15892C25AE3E00FE5256 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
+		854E158D2C25F2FE00FE5256 /* AddPassageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPassageButton.swift; sourceTree = "<group>"; };
 		855318BA2C16E56800340ACF /* BookDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailViewController.swift; sourceTree = "<group>"; };
 		855318C02C17FAD800340ACF /* PassageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassageTableViewCell.swift; sourceTree = "<group>"; };
 		855318C52C1AEBF900340ACF /* BookDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailViewModel.swift; sourceTree = "<group>"; };
@@ -177,6 +198,7 @@
 		A75908D22C12D69300415D6D /* IntArrayExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntArrayExtension.swift; sourceTree = "<group>"; };
 		A75D3D742C1B47D1006C2EB3 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		A75D3D762C1B493F006C2EB3 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
+		A774B63C2C2943EB00F43394 /* TextFieldExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldExtension.swift; sourceTree = "<group>"; };
 		A78D2A1B2C216FCF00F8AC72 /* LibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewModel.swift; sourceTree = "<group>"; };
 		A7F2DB162C1347C80020B0AA /* PassageDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassageDetailViewController.swift; sourceTree = "<group>"; };
 		A7F2DB182C134B200020B0AA /* PassageDetailContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassageDetailContainerView.swift; sourceTree = "<group>"; };
@@ -191,8 +213,11 @@
 		AB4BDC032C20394C001FDA8F /* AddPassageContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPassageContainerView.swift; sourceTree = "<group>"; };
 		AB4BDC052C216BF7001FDA8F /* RecentSearchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSearchCell.swift; sourceTree = "<group>"; };
 		AB4BDC092C219C6F001FDA8F /* BookSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookSearchViewModel.swift; sourceTree = "<group>"; };
+		AB4BDC0B2C249608001FDA8F /* addSubviewsExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addSubviewsExtension.swift; sourceTree = "<group>"; };
+		AB4BDC0D2C249F1B001FDA8F /* BookSearchContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookSearchContainerView.swift; sourceTree = "<group>"; };
 		AB66D3432C0EEFE3000D72DA /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		AB66D3682C17688C000D72DA /* BookSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookSearchViewController.swift; sourceTree = "<group>"; };
+		ABEB97212C28FA5C00501696 /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,7 +237,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB2386A52C1AF1A100E6FACE /* Kingfisher in Frameworks */,
-				AB2386A82C1B021D00E6FACE /* BetterSegmentedControl in Frameworks */,
 				AB2386A22C1A0CDB00E6FACE /* IQKeyboardManagerSwift in Frameworks */,
 				A74874932C0D7F3400B830EE /* RxSwift in Frameworks */,
 				A74874912C0D7F3400B830EE /* RxRelay in Frameworks */,
@@ -237,10 +261,19 @@
 		3C73E2972C1889F6004B1BF8 /* HomeView */ = {
 			isa = PBXGroup;
 			children = (
+				3C9AD8C12C25A49E007393C1 /* View */,
 				854E156C2C2448D300FE5256 /* Cell */,
 				854E156B2C2448B500FE5256 /* ViewController */,
 			);
 			path = HomeView;
+			sourceTree = "<group>";
+		};
+		3C9AD8C12C25A49E007393C1 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				3C9AD8C22C25A4FC007393C1 /* HomeView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		7BE488B02C16E21E00BDB92A /* LibraryView */ = {
@@ -485,6 +518,8 @@
 			isa = PBXGroup;
 			children = (
 				AB4BDC032C20394C001FDA8F /* AddPassageContainerView.swift */,
+				ABEB97212C28FA5C00501696 /* InfoView.swift */,
+				AB4BDC0D2C249F1B001FDA8F /* BookSearchContainerView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -513,6 +548,12 @@
 				3C73E2A22C1B03AC004B1BF8 /* FloatButton.swift */,
 				A722B5882C1C715000E43FC9 /* SegmentControlView.swift */,
 				A74874822C0D7ED100B830EE /* PaddingLabel.swift */,
+				854E157F2C24828D00FE5256 /* BaseAlarmSettingSheetViewController.swift */,
+				854E15832C2495A500FE5256 /* BaseLibraryAndPassageViewController.swift */,
+				854E15852C24A67E00FE5256 /* SortButton.swift */,
+				854E15872C25534700FE5256 /* SortMenuView.swift */,
+				854E15892C25AE3E00FE5256 /* SearchBar.swift */,
+				854E158D2C25F2FE00FE5256 /* AddPassageButton.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -605,9 +646,13 @@
 		A74874792C0D7E1100B830EE /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				3C9AD8992C2462B0007393C1 /* FloatingButtonViewController.swift */,
 				A75908D22C12D69300415D6D /* IntArrayExtension.swift */,
+				3C9AD89B2C24634E007393C1 /* UICollectionViewCellExtension.swift */,
 				A75D3D742C1B47D1006C2EB3 /* StringExtension.swift */,
 				A75D3D762C1B493F006C2EB3 /* DateExtension.swift */,
+				AB4BDC0B2C249608001FDA8F /* addSubviewsExtension.swift */,
+				A774B63C2C2943EB00F43394 /* TextFieldExtension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -753,7 +798,6 @@
 				A74874922C0D7F3400B830EE /* RxSwift */,
 				AB355D572C180D8F00B3DE16 /* Kingfisher */,
 				AB2386A12C1A0CDB00E6FACE /* IQKeyboardManagerSwift */,
-				AB2386A72C1B021D00E6FACE /* BetterSegmentedControl */,
 			);
 			productName = Dokgi;
 			productReference = A748745E2C0D7E0600B830EE /* Dokgi.app */;
@@ -793,7 +837,6 @@
 				A748748D2C0D7F3400B830EE /* XCRemoteSwiftPackageReference "RxSwift" */,
 				AB355D562C180D8F00B3DE16 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				AB2386A02C1A0CDB00E6FACE /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
-				AB2386A62C1B021D00E6FACE /* XCRemoteSwiftPackageReference "BetterSegmentedControl" */,
 			);
 			productRefGroup = A748745F2C0D7E0600B830EE /* Products */;
 			projectDirPath = "";
@@ -851,13 +894,20 @@
 				A75D3D732C1A11C7006C2EB3 /* PaddingLabel.swift in Sources */,
 				A75D3D722C1A11C4006C2EB3 /* PassageDetailViewController.swift in Sources */,
 				855318C12C17FAD800340ACF /* PassageTableViewCell.swift in Sources */,
+				3C9AD8C32C25A4FC007393C1 /* HomeView.swift in Sources */,
 				A75908B72C0EF4C000415D6D /* SettingViewController.swift in Sources */,
 				A7F2DB642C18BAA70020B0AA /* PassageDetailViewModel.swift in Sources */,
+				854E15882C25534700FE5256 /* SortMenuView.swift in Sources */,
+				854E158E2C25F2FE00FE5256 /* AddPassageButton.swift in Sources */,
+				AB4BDC0C2C249608001FDA8F /* addSubviewsExtension.swift in Sources */,
 				A75908C42C0F6B9600415D6D /* Font.swift in Sources */,
 				AB4BDC0A2C219C6F001FDA8F /* BookSearchViewModel.swift in Sources */,
+				854E15862C24A67E00FE5256 /* SortButton.swift in Sources */,
 				3C73E2A12C1AB164004B1BF8 /* HomeViewController.swift in Sources */,
+				854E15842C2495A500FE5256 /* BaseLibraryAndPassageViewController.swift in Sources */,
 				85BC84762C21BCD700D8A27E /* AppDelegate.swift in Sources */,
 				A75908D12C12D36100415D6D /* UserDefaultsKey.swift in Sources */,
+				ABEB97222C28FA5C00501696 /* InfoView.swift in Sources */,
 				AB23869F2C19B5FC00E6FACE /* VerseModel.swift in Sources */,
 				7B487B102C251A380082EF92 /* PassageView.swift in Sources */,
 				A748746C2C0D7E0700B830EE /* Dokgi.xcdatamodeld in Sources */,
@@ -865,9 +915,11 @@
 				A7F2DB1D2C15C6E70020B0AA /* KeywordCollectionViewCell.swift in Sources */,
 				3C208EB02C10273F00CED104 /* DataManager.swift in Sources */,
 				A75908C82C0F758900415D6D /* DaySelectViewController.swift in Sources */,
+				AB4BDC0E2C249F1B001FDA8F /* BookSearchContainerView.swift in Sources */,
 				A75908D32C12D69300415D6D /* IntArrayExtension.swift in Sources */,
 				7B487B122C2590130082EF92 /* LibraryView.swift in Sources */,
 				AB4BDC062C216BF7001FDA8F /* RecentSearchCell.swift in Sources */,
+				854E15802C24828D00FE5256 /* BaseAlarmSettingSheetViewController.swift in Sources */,
 				A722B5892C1C715000E43FC9 /* SegmentControlView.swift in Sources */,
 				855318C62C1AEBF900340ACF /* BookDetailViewModel.swift in Sources */,
 				7B487B142C25922A0082EF92 /* LibraryCollectionView.swift in Sources */,
@@ -883,6 +935,7 @@
 				3C41815F2C0DBF9800D141FD /* BookModel.swift in Sources */,
 				AB66D3442C0EEFE3000D72DA /* TabBarViewController.swift in Sources */,
 				3C73E2A32C1B03AD004B1BF8 /* FloatButton.swift in Sources */,
+				3C9AD89C2C24634E007393C1 /* UICollectionViewCellExtension.swift in Sources */,
 				8500B52E2C203A4500A0EB38 /* PassageViewModel.swift in Sources */,
 				854E157E2C244FCA00FE5256 /* BaseViewModel.swift in Sources */,
 				7BE488B52C16E4CF00BDB92A /* PassageCollectionViewCell.swift in Sources */,
@@ -900,7 +953,10 @@
 				A75908CF2C101A3900415D6D /* DayTableViewCell.swift in Sources */,
 				855318BB2C16E56800340ACF /* BookDetailViewController.swift in Sources */,
 				A75908B92C0F087900415D6D /* AlarmView.swift in Sources */,
+				A774B63D2C2943EB00F43394 /* TextFieldExtension.swift in Sources */,
+				3C9AD89A2C2462B0007393C1 /* FloatingButtonViewController.swift in Sources */,
 				A75908C62C0F756800415D6D /* TimePickerViewController.swift in Sources */,
+				854E158A2C25AE3E00FE5256 /* SearchBar.swift in Sources */,
 				A7F2DB212C16FF860020B0AA /* CoreDataManager.swift in Sources */,
 				A74874642C0D7E0600B830EE /* SceneDelegate.swift in Sources */,
 				3C208EB22C106DD300CED104 /* HomeViewModel.swift in Sources */,
@@ -937,9 +993,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = DokgiWidgetExtension.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CS9SP68DH3;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = CS9SP68DH3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DokgiWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = DokgiWidget;
@@ -953,6 +1011,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dogaegeol6mo.Dokgi.DokgiWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Dokgi Widget Development";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -1121,9 +1181,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Dokgi/Dokgi.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CS9SP68DH3;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = CS9SP68DH3;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Dokgi/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "이 앱은 문서 스캔을 위해 카메라를 사용합니다.";
@@ -1140,6 +1202,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dogaegeol6mo.Dokgi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Dokgi Development";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -1158,9 +1222,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Dokgi/Dokgi.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CS9SP68DH3;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Dokgi/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "이 앱은 문서 스캔을 위해 카메라를 사용합니다.";
@@ -1177,6 +1241,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dogaegeol6mo.Dokgi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -1252,14 +1317,6 @@
 				minimumVersion = 7.0.3;
 			};
 		};
-		AB2386A62C1B021D00E6FACE /* XCRemoteSwiftPackageReference "BetterSegmentedControl" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/gmarm/BetterSegmentedControl";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.1;
-			};
-		};
 		AB355D562C180D8F00B3DE16 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
@@ -1310,11 +1367,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AB2386A02C1A0CDB00E6FACE /* XCRemoteSwiftPackageReference "IQKeyboardManager" */;
 			productName = IQKeyboardManagerSwift;
-		};
-		AB2386A72C1B021D00E6FACE /* BetterSegmentedControl */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AB2386A62C1B021D00E6FACE /* XCRemoteSwiftPackageReference "BetterSegmentedControl" */;
-			productName = BetterSegmentedControl;
 		};
 		AB355D572C180D8F00B3DE16 /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;

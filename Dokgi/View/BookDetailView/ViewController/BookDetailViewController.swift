@@ -5,14 +5,16 @@
 //  Created by 예슬 on 6/10/24.
 //
 
-import RxSwift
 import Kingfisher
+import RxSwift
 import SnapKit
 import Then
 import UIKit
 
 class BookDetailViewController: UIViewController {
-    let viewModel = BookDetailViewModel.shared
+
+    let viewModel = BookDetailViewModel()
+
     private var disposeBag = DisposeBag()
     
     private let contentsView = UIView()
@@ -20,7 +22,6 @@ class BookDetailViewController: UIViewController {
     private let buttonBackgroundView = UIView()
     private let buttonBackgroundLayer = CAGradientLayer()
     private let gradientLayer = CAGradientLayer()
-    
     
     private let scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
@@ -31,7 +32,7 @@ class BookDetailViewController: UIViewController {
         $0.clipsToBounds = true
     }
     
-    private let blurView = UIVisualEffectView().then {
+    private let backgroundImageBlurView = UIVisualEffectView().then {
         $0.backgroundColor = .white.withAlphaComponent(0.6)
         $0.effect = UIBlurEffect(style: .light)
         $0.alpha = 0.8
@@ -52,6 +53,7 @@ class BookDetailViewController: UIViewController {
         $0.font = Pretendard.semibold.dynamicFont(style: .headline)
         $0.numberOfLines = 2
         $0.textAlignment = .center
+        $0.textColor = .black
     }
     
     private let authorLabel = UILabel().then {
@@ -70,6 +72,7 @@ class BookDetailViewController: UIViewController {
         $0.text = "처음 기록 날짜"
         $0.font = Pretendard.regular.dynamicFont(style: .subheadline)
         $0.textAlignment = .left
+        $0.textColor = .black
     }
     
     private let dateLabel = UILabel().then {
@@ -81,6 +84,7 @@ class BookDetailViewController: UIViewController {
     private let passageTitleLabel = UILabel().then {
         $0.text = "구절"
         $0.font = Pretendard.semibold.dynamicFont(style: .title3)
+        $0.textColor = .black
     }
     
     private let passageTableView = UITableView().then {
@@ -89,19 +93,11 @@ class BookDetailViewController: UIViewController {
         $0.separatorStyle = .none
         $0.isScrollEnabled = false
     }
-    
-    lazy var addPassageButton = UIButton().then {
-        $0.backgroundColor = .charcoalBlue
-        $0.layer.cornerRadius = 15
-        $0.clipsToBounds = true
-        $0.addTarget(self, action: #selector(didTabAddPassageButton), for: .touchUpInside)
+
+    private let addPassageButton = AddPassageButton().then {
+        $0.setButtonTitle("구절 추가하기")
     }
-    
-    private let buttonLabel = UILabel().then {
-        $0.text = "구절 추가하기"
-        $0.font = Pretendard.semibold.dynamicFont(style: .headline)
-        $0.textColor = .white
-    }
+
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -109,47 +105,46 @@ class BookDetailViewController: UIViewController {
         passageTableView.dataSource = self
         passageTableView.delegate = self
         passageTableView.register(PassageTableViewCell.self, forCellReuseIdentifier: PassageTableViewCell.identifier)
-        viewModel.makePassageDateOfBook()
         setConstraints()
-        setBookInfo()
-        
-        CoreDataManager.shared.bookData.subscribe(with: self) { (self, bookData) in
-            self.viewModel.makePassageDateOfBook()
-            self.passageTableView.reloadData()
-        }.disposed(by: disposeBag)
+        bindViewModel()
+        tappedAddPassageButton()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isHidden = false
-        
         blurLayer(layer: gradientLayer, view: gradientLayerView)
         blurLayer(layer: buttonBackgroundLayer, view: buttonBackgroundView)
-        passageTableView.snp.remakeConstraints {
-            $0.top.equalTo(passageTitleLabel.snp.bottom).offset(11)
-            $0.horizontalEdges.equalToSuperview().inset(20)
-            $0.height.equalTo(96 * viewModel.passagesData.value.count)
-            $0.bottom.equalToSuperview().inset(60)
-        }
-
     }
+    
+    private func bindViewModel() {
+        viewModel.bookInfo
+            .observe(on: MainScheduler.instance)
+            .subscribe(with: self) { (self, bookInfo) in
+                self.setBookInfo(bookInfo)
+            }.disposed(by: disposeBag)
+        
+        viewModel.passagesData
+            .observe(on: MainScheduler.instance)
+            .subscribe(with: self) { (self, _) in
+                self.viewModel.makePassageDataOfBook()
+                self.passageTableView.reloadData()
+                self.updatePassageTableHeight()
+            }.disposed(by: disposeBag)
+    }
+    
     // MARK: - UI
     private func setConstraints() {
-        view.addSubview(scrollView)
+        view.addSubviews([scrollView, buttonBackgroundView, addPassageButton])
         scrollView.addSubview(contentsView)
-        addPassageButton.addSubview(buttonLabel)
-        view.addSubview(buttonBackgroundView)
-        view.addSubview(addPassageButton)
-        [backgroundBookImage,
-         blurView,
-         gradientLayerView,
-         bookImage,
-         bookInfoStackView,
-         firstDateRecordStackView,
-         passageTitleLabel,
-         passageTableView].forEach {
-            contentsView.addSubview($0)
-        }
+        contentsView.addSubviews([backgroundBookImage,
+                                  backgroundImageBlurView,
+                                  gradientLayerView,
+                                  bookImage,
+                                  bookInfoStackView,
+                                  firstDateRecordStackView,
+                                  passageTitleLabel,
+                                  passageTableView])
         
         [bookTitleLabel, authorLabel].forEach {
             bookInfoStackView.addArrangedSubview($0)
@@ -180,14 +175,14 @@ class BookDetailViewController: UIViewController {
             $0.bottom.equalTo(bookInfoStackView.snp.top)
         }
         
-        blurView.snp.makeConstraints {
+        backgroundImageBlurView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(-100)
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalTo(bookInfoStackView.snp.top)
         }
         
         gradientLayerView.snp.makeConstraints {
-            $0.bottom.equalTo(blurView.snp.bottom)
+            $0.bottom.equalTo(backgroundImageBlurView.snp.bottom)
             $0.horizontalEdges.equalToSuperview()
             $0.height.equalTo(view.safeAreaLayoutGuide).multipliedBy(0.09)
         }
@@ -221,15 +216,10 @@ class BookDetailViewController: UIViewController {
             $0.centerX.equalTo(buttonBackgroundView)
         }
         
-        buttonLabel.snp.makeConstraints {
-            $0.centerY.centerX.equalToSuperview()
-            $0.verticalEdges.equalToSuperview().inset(15)
-        }
-        
         buttonBackgroundView.snp.makeConstraints {
-            $0.centerY.equalTo(addPassageButton)
+            $0.top.equalTo(addPassageButton)
             $0.horizontalEdges.equalToSuperview()
-            $0.height.equalTo(view.safeAreaLayoutGuide).multipliedBy(0.3)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
@@ -243,9 +233,11 @@ class BookDetailViewController: UIViewController {
         layer.colors = colors
         
         DispatchQueue.global(qos: .userInitiated).async {
-            let startPoint = CGPoint(x: 0.5, y: 0.0)
+            var startPoint = CGPoint(x: 0.5, y: 0.0)
             let endPoint: CGPoint
+            
             if view == self.buttonBackgroundView {
+                startPoint = CGPoint(x: 0.5, y: -0.8)
                 endPoint = CGPoint(x: 0.5, y: 0.5)
             } else {
                 endPoint = CGPoint(x: 0.5, y: 0.8)
@@ -260,28 +252,35 @@ class BookDetailViewController: UIViewController {
         }
     }
     
-    private func setBookInfo() {
-        bookTitleLabel.text = viewModel.bookInfo.value.name
-        authorLabel.text = viewModel.bookInfo.value.author
-        dateLabel.text = viewModel.recordDateFormat()
+    private func setBookInfo(_ bookInfo: Verse) {
+        bookTitleLabel.text = bookInfo.name
+        authorLabel.text = bookInfo.author
+        dateLabel.text = bookInfo.date.toString()
         
-        if let url = URL(string: viewModel.bookInfo.value.image) {
+        if let url = URL(string: bookInfo.image) {
             bookImage.kf.setImage(with: url)
             backgroundBookImage.kf.setImage(with: url)
         }
     }
     
-    @objc private func didTabAddPassageButton() {
-        let addVerseVC = AddPassageViewController()
-        addVerseVC.viewModel.selectedBook = viewModel.makeAddVerseViewData()
-        self.navigationController?.pushViewController(addVerseVC, animated: true)
-        addVerseVC.displayBookInfo()
+    private func updatePassageTableHeight() {
+        passageTableView.snp.updateConstraints {
+            $0.height.equalTo(96 * viewModel.passagesData.value.count)
+        }
+    }
+    
+    private func tappedAddPassageButton() {
+        addPassageButton.rx.tap.subscribe(with: self) { (self, _) in
+            let addVerseVC = AddPassageViewController()
+            addVerseVC.viewModel.selectedBook = self.viewModel.makeAddVerseViewData()
+            self.navigationController?.pushViewController(addVerseVC, animated: true)
+            addVerseVC.displayBookInfo()
+        }.disposed(by: disposeBag)
     }
 }
 // MARK: - PassageTableView
 extension BookDetailViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         return viewModel.passagesData.value.count
     }
     
@@ -297,8 +296,4 @@ extension BookDetailViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 96
     }
-}
-
-#Preview {
-    BookDetailViewController()
 }

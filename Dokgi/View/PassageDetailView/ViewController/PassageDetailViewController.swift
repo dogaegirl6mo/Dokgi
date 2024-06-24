@@ -87,7 +87,7 @@ class PassageDetailViewController: UIViewController {
         
         titleStack.snp.makeConstraints {
             $0.top.equalToSuperview().offset(28)
-            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.horizontalEdges.equalToSuperview().inset(16)
         }
         
         editBtn.snp.makeConstraints {
@@ -110,7 +110,7 @@ class PassageDetailViewController: UIViewController {
     func dataBinding() {
         viewModel.detailPassage.subscribe(with: self) { (self, data) in
             self.titleLbl.text = data.name
-            self.containerView.paragrapTextLbl.text = data.text
+            self.containerView.passageTextLbl.text = data.text
             self.viewModel.keywords.accept(data.keywords)
             if self.viewModel.keywords.value.isEmpty {
                 self.containerView.noKeywordLabel.isHidden = false
@@ -135,26 +135,23 @@ class PassageDetailViewController: UIViewController {
                 self.editBtn.titleLabel?.font = Pretendard.semibold.dynamicFont(style: .callout)
                 self.editBtn.setTitleColor(.skyBlue, for: .normal)
                 self.editBtn.setImage(nil, for: .normal)
-                self.containerView.pageTextField.isHidden = false
-                self.containerView.pageSegment.isHidden = false
-                self.containerView.pageTextField.text = "\(self.viewModel.detailPassage.value.pageNumber)"
-                self.containerView.pageWriteLbl.isHidden = true
+                self.containerView.pageTextField.text = "\(self.viewModel.detailParagraph.value.pageNumber)"
                 self.containerView.keywordCollectionView.reloadData()
                 if self.viewModel.detailPassage.value.pageType == "%" {
                     self.containerView.pageSegment.selectedIndex = 1
                 }
             } else {
-                if self.selectAlert() {
+                let alert = self.containerView.pageTextField.selectAlert(pageType: self.containerView.pageSegment.selectedIndex)
+                if alert.message == "" {
                     self.containerView.editCompleteLayout()
                     self.sheetPresentationController?.detents = [self.smallDetent]
                     self.editBtn.setTitle("수정하기", for: .normal)
                     self.editBtn.titleLabel?.font = Pretendard.regular.dynamicFont(style: .footnote)
                     self.editBtn.setTitleColor(.black, for: .normal)
                     self.editBtn.setImage(.modalEdit, for: .normal)
-                    self.viewModel.saveDetail(paragraph: self.containerView.paragrapTextField.text, page: self.containerView.pageTextField.text ?? "", pageType: self.containerView.pageSegment.selectedIndex)
-                    self.containerView.pageTextField.isHidden = true
-                    self.containerView.pageSegment.isHidden = true
-                    self.containerView.pageWriteLbl.isHidden = false
+                    self.viewModel.saveDetail(paragraph: self.containerView.passageTextField.text, page: self.containerView.pageTextField.text ?? "", pageType: self.containerView.pageSegment.selectedIndex)
+                } else {
+                    self.present(alert, animated: true)
                 }
             }
         }.disposed(by: disposeBag)
@@ -167,7 +164,7 @@ class PassageDetailViewController: UIViewController {
             self.containerView.pageSegment.selectedIndex = 1
         }.disposed(by: disposeBag)
         
-        containerView.paragrapTextField.rx.text.orEmpty.subscribe(with: self) { (self, text) in
+        containerView.passageTextField.rx.text.orEmpty.subscribe(with: self) { (self, text) in
             self.containerView.paragrapTextLimit(text)
         }.disposed(by: disposeBag)
         
@@ -188,52 +185,16 @@ class PassageDetailViewController: UIViewController {
         
         viewModel.keywords.bind(to: containerView.keywordCollectionView.rx.items(cellIdentifier: KeywordCollectionViewCell.identifier,
                    cellType: KeywordCollectionViewCell.self)) { row, data, cell in
-            cell.keywordLbl.text = data
-            cell.xBtn.rx.tap.subscribe(with: self) { (self, data) in
+            cell.keywordLabel.text = data
+            cell.xButton.rx.tap.subscribe(with: self) { (self, data) in
                 self.viewModel.deleteDetailKeyword(keyword: row)
             }.disposed(by: cell.disposeBag)
             
             if self.editBtn.titleLabel?.text == "수정하기" {
-                cell.xBtn.isHidden = true
+                cell.xButton.isHidden = true
             } else {
-                cell.xBtn.isHidden = false
+                cell.xButton.isHidden = false
             }
         }.disposed(by: disposeBag)
-    }
-    private func selectAlert() -> Bool {
-        var title: String = ""
-        var message: String = ""
-        if containerView.pageTextField.text!.isEmpty == true {
-            title = "페이지"
-            message = "페이지를 입력해 주세요"
-            showAlert(title: title, message: message)
-            return false
-        }
-        
-        if let pageNumberText = containerView.pageTextField.text, let _ = Int(pageNumberText) {
-            if self.containerView.pageSegment.selectedIndex == 0 && Int((containerView.pageTextField.text)!) ?? 0 <= 0 {
-                title = "페이지 값 오류"
-                message = "0 이상을 입력하세요."
-                showAlert(title: title, message: message)
-                return false
-            } else if self.containerView.pageSegment.selectedIndex == 1 && Int((containerView.pageTextField.text)!) ?? 101 > 100 {
-                title = "% 값 오류"
-                message = "100이하를 입력하세요."
-                showAlert(title: title, message: message)
-                return false
-            }
-        } else {
-            title = "입력값오류"
-            message = "숫자를 입력하세요."
-            showAlert(title: title, message: message)
-            return false
-        }
-        return true
-    }
-    
-    func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
     }
 }

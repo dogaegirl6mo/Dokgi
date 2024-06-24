@@ -26,9 +26,7 @@ class SettingViewController: UIViewController{
         super.viewDidLoad()
         view.backgroundColor = .white
         setupLayout()
-        buttonTap()
-        buttonTitle()
-        switchOnOff()
+        dataBind()
         NotificationCenter.default.addObserver(self, selector: #selector(checkNotificationSetting), name: UIApplication.willEnterForegroundNotification, object: nil)
     }
     
@@ -56,7 +54,7 @@ class SettingViewController: UIViewController{
         alarmView.writeSwitch.isOn = UserDefaults.standard.bool(forKey: UserDefaultsKeys.writeSwitch.rawValue)
     }
     
-    func buttonTap() {
+    func dataBind() {
         alarmView.remindTimeBtn.rx.tap.subscribe { _ in
             if UserDefaults.standard.bool(forKey: UserDefaultsKeys.remindSwitch.rawValue) == true {
                 let remindVC = TimePickerViewController()
@@ -78,9 +76,7 @@ class SettingViewController: UIViewController{
                 self.present(writeVC, animated: true)
             }
         }.disposed(by: disposeBag)
-    }
-    
-    func buttonTitle() {
+        
         DayTimeViewModel.remindTime.subscribe(with: self) { (self, Time) in
             self.updateButtonTitleAndSendNotification(button: self.alarmView.remindTimeBtn, title: Time.timeToString(), switchControl: self.alarmView.remindSwitch.isOn, identifier: "remindTime", time: Time, day: [])
         }.disposed(by: disposeBag)
@@ -93,9 +89,7 @@ class SettingViewController: UIViewController{
             self.alarmView.writeSwitch.isOn = UserDefaults.standard.bool(forKey: UserDefaultsKeys.writeSwitch.rawValue)
             self.updateButtonTitleAndSendNotification(button: self.alarmView.weekBtn, title: DayTimeViewModel.dayCheck.value.dayToString(), switchControl: self.alarmView.writeSwitch.isOn, identifier: "writeTime", time: DayTimeViewModel.writeTime.value, day: week)
         }.disposed(by: disposeBag)
-    }
-    
-    func switchOnOff() {
+        
         alarmView.remindSwitch.rx.isOn.subscribe(with: self) { (self, bool) in
             if UserDefaults.standard.bool(forKey: UserDefaultsKeys.notification.rawValue) == true {
                 self.viewModel.removePendingNotification(identifiers: "remindTime", time: DayTimeViewModel.remindTime.value, on: bool)
@@ -153,6 +147,7 @@ class SettingViewController: UIViewController{
             }
         }
     }
+    
     func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
 
         return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)
@@ -169,8 +164,6 @@ class SettingViewController: UIViewController{
                     UserDefaults.standard.set(false, forKey: UserDefaultsKeys.notification.rawValue)
                     UserDefaults.standard.set(false, forKey: UserDefaultsKeys.writeSwitch.rawValue)
                     UserDefaults.standard.set(false, forKey: UserDefaultsKeys.remindSwitch.rawValue)
-                    self.alarmView.writeSwitch.isOn = false
-                    self.alarmView.remindSwitch.isOn = false
                     self.alarmView.switchHidden(onoff: false)
                 }
             }
