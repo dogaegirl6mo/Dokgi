@@ -10,27 +10,18 @@ import RxCocoa
 
 class BookDetailViewModel {
     
-    var bookInfo = BehaviorRelay(value: Verse(name: "", author: "", image: "", text: "", pageNumber: 0, pageType: "", keywords: [], date: Date()))
-    var passagesData = BehaviorRelay(value: [Passage(text: "", pageType: "", pageNumber: 0)])
+    var bookInfo = BehaviorRelay(value: Book(title: "", author: "", image: "", passages: []))
     
-    func makePassageDataOfBook() {
-        let sameTitleBook =  CoreDataManager.shared.bookData.value.filter { $0.name == bookInfo.value.name }
-        passagesData.accept(sameTitleBook.map { book in
-            Passage(text: book.text, pageType: book.pageType, pageNumber: book.pageNumber)
-        })
+    func setFirstRecordDate() -> String {
+        let sortedPassages = bookInfo.value.passages.sorted(by: { $0.date < $1.date })
+        return sortedPassages.first?.date.toString() ?? ""
     }
     
-    func pageTypeToP(_ pageType: String) -> String {
-        return (pageType.lowercased() == "page") ? "P" : pageType
+    func pageTypeToString(_ pageType: Bool) -> String {
+        return pageType ? "P" : "%"
     }
     
     func makeAddVerseViewData() -> Item {
-        return Item(title: bookInfo.value.name, image: bookInfo.value.image, author: bookInfo.value.author)
+        return Item(title: bookInfo.value.title, image: bookInfo.value.image, author: bookInfo.value.author)
     }
 }
-//
-//struct Passage {
-//    var text: String
-//    var pageType: String
-//    var pageNumber: Int
-//}

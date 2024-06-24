@@ -108,9 +108,9 @@ class PassageDetailViewController: UIViewController {
     }
     
     func dataBinding() {
-        viewModel.detailParagraph.subscribe(with: self) { (self, data) in
-            self.titleLbl.text = data.name
-            self.containerView.passageTextLbl.text = data.text
+        viewModel.detailPassage.subscribe(with: self) { (self, data) in
+            self.titleLbl.text = data.title
+            self.containerView.passageTextLbl.text = data.passage
             self.viewModel.keywords.accept(data.keywords)
             if self.viewModel.keywords.value.isEmpty {
                 self.containerView.noKeywordLabel.isHidden = false
@@ -119,7 +119,7 @@ class PassageDetailViewController: UIViewController {
                 self.containerView.noKeywordLabel.isHidden = true
                 self.containerView.keywordCollectionView.isHidden = false
             }
-            self.containerView.pageWriteLbl.text = "\(data.pageNumber) \(data.pageType)"
+            self.containerView.pageWriteLbl.text = "\(data.page) \(data.pageType)"
             self.containerView.writeDateDay.text = data.date.toString()
         }.disposed(by: disposeBag)
         
@@ -135,9 +135,9 @@ class PassageDetailViewController: UIViewController {
                 self.editBtn.titleLabel?.font = Pretendard.semibold.dynamicFont(style: .callout)
                 self.editBtn.setTitleColor(.skyBlue, for: .normal)
                 self.editBtn.setImage(nil, for: .normal)
-                self.containerView.pageTextField.text = "\(self.viewModel.detailParagraph.value.pageNumber)"
+                self.containerView.pageTextField.text = "\(self.viewModel.detailPassage.value.page)"
                 self.containerView.keywordCollectionView.reloadData()
-                if self.viewModel.detailParagraph.value.pageType == "%" {
+                if self.viewModel.detailPassage.value.pageType == false {
                     self.containerView.pageSegment.selectedIndex = 1
                 }
             } else {

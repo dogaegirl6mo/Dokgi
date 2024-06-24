@@ -81,10 +81,10 @@ class PassageTableViewCell: UITableViewCell {
     }
     
     func setPassageData(passage: Passage) {
-        let pageNumber = passage.pageNumber
+        let pageNumber = passage.page
         let pageType = passage.pageType
         
-        pageLabel.text = String(pageNumber) + viewModel.pageTypeToP(pageType)
-        passageLabel.text = passage.text
+        pageLabel.text = String(pageNumber) + viewModel.pageTypeToString(pageType)
+        passageLabel.text = passage.passage
     }
 }

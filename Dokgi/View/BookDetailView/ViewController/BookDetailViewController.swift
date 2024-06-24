@@ -6,6 +6,7 @@
 //
 
 import Kingfisher
+import RxCocoa
 import RxSwift
 import SnapKit
 import Then
@@ -120,12 +121,6 @@ class BookDetailViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .subscribe(with: self) { (self, bookInfo) in
                 self.setBookInfo(bookInfo)
-            }.disposed(by: disposeBag)
-        
-        viewModel.passagesData
-            .observe(on: MainScheduler.instance)
-            .subscribe(with: self) { (self, _) in
-                self.viewModel.makePassageDataOfBook()
                 self.passageTableView.reloadData()
                 self.updatePassageTableHeight()
             }.disposed(by: disposeBag)
@@ -163,7 +158,7 @@ class BookDetailViewController: UIViewController {
         passageTableView.snp.makeConstraints {
             $0.top.equalTo(passageTitleLabel.snp.bottom).offset(11)
             $0.horizontalEdges.equalToSuperview().inset(20)
-            $0.height.equalTo(96 * viewModel.passagesData.value.count)
+            $0.height.equalTo(96 * viewModel.bookInfo.value.passages.count)
             $0.bottom.equalToSuperview().inset(60)
         }
         
@@ -250,10 +245,10 @@ class BookDetailViewController: UIViewController {
         }
     }
     
-    private func setBookInfo(_ bookInfo: Verse) {
-        bookTitleLabel.text = bookInfo.name
+    private func setBookInfo(_ bookInfo: Book) {
+        bookTitleLabel.text = bookInfo.title
         authorLabel.text = bookInfo.author
-        dateLabel.text = bookInfo.date.toString()
+        dateLabel.text = viewModel.setFirstRecordDate()
         
         if let url = URL(string: bookInfo.image) {
             bookImage.kf.setImage(with: url)
@@ -263,7 +258,7 @@ class BookDetailViewController: UIViewController {
     
     private func updatePassageTableHeight() {
         passageTableView.snp.updateConstraints {
-            $0.height.equalTo(96 * viewModel.passagesData.value.count)
+            $0.height.equalTo(96 * viewModel.bookInfo.value.passages.count)
         }
     }
     
@@ -279,14 +274,14 @@ class BookDetailViewController: UIViewController {
 // MARK: - PassageTableView
 extension BookDetailViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.passagesData.value.count
+        return viewModel.bookInfo.value.passages.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: PassageTableViewCell.identifier, for: indexPath) as? PassageTableViewCell else { return UITableViewCell() }
         
         cell.selectionStyle = .none
-        cell.setPassageData(passage: viewModel.passagesData.value[indexPath.row])
+        cell.setPassageData(passage: viewModel.bookInfo.value.passages[indexPath.row])
         
         return cell
     }

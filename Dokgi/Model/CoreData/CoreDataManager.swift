@@ -45,7 +45,7 @@ class CoreDataManager {
             newPassage.date = passage.date
             newPassage.keywords = passage.keywords
             try context.save()
-            WidgetCenter.shared.reloadTimelines(ofKind: "DokgiWidget")
+//            WidgetCenter.shared.reloadTimelines(ofKind: "DokgiWidget")
         } catch {
             print("Failed to fetch or save data: \(error)")
         }
