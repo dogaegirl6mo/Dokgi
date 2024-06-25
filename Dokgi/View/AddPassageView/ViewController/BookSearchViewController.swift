@@ -17,7 +17,6 @@ class BookSearchViewController: UIViewController {
     private let viewModel = BookSearchViewModel()
     private let containerView = BookSearchContainerView()
     private let monitor = NWPathMonitor()
-    private var isNetworkAvailable: Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,7 +77,7 @@ class BookSearchViewController: UIViewController {
     private func startNetworkMonitoring() {
         let queue = DispatchQueue.global(qos: .background)
         monitor.pathUpdateHandler = { path in
-            self.isNetworkAvailable = path.status == .satisfied
+            self.viewModel.isNetworkAvailable = path.status == .satisfied
         }
         monitor.start(queue: queue)
     }
@@ -160,7 +159,7 @@ extension BookSearchViewController: UISearchBarDelegate {
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        guard isNetworkAvailable else {
+        guard viewModel.isNetworkAvailable else {
             self.showAlert(title: "인터넷 연결", message: "인터넷이 연결되어 있지 않습니다.\n 설정에서 인터넷 연결상태를 확인해주세요.")
             searchBar.resignFirstResponder()
             return
@@ -240,7 +239,7 @@ extension BookSearchViewController: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegate
 extension BookSearchViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard isNetworkAvailable else {
+        guard viewModel.isNetworkAvailable else {
             self.showAlert(title: "인터넷 연결", message: "인터넷이 연결되어 있지 않습니다.\n 설정에서 인터넷 연결상태를 확인해주세요.")
             return
         }

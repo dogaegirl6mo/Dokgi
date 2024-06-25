@@ -16,6 +16,7 @@ class BookSearchViewModel {
     var isLoadingLast = false
     var query: String = ""
     var startIndex: Int = 0
+    var isNetworkAvailable: Bool = true
     
     func fetchBooks(query: String, startIndex: Int, completion: @escaping (Result<[Item], Error>) -> Void) {
         isLoading = true
