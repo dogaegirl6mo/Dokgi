@@ -11,75 +11,16 @@ import SnapKit
 import Then
 import UIKit
 
-class DaySelectViewController: UIViewController {
-    
-    let disposeBag = DisposeBag()
-    
-    private let viewModel = DayTimeViewModel()
-    
-    let cancelBtn = UIButton().then {
-        $0.setTitle("취소", for: .normal)
-        $0.setTitleColor(.brightRed, for: .normal)
-        $0.titleLabel?.font = Pretendard.regular.dynamicFont(style: .body)
-    }
-    
-    let titleLbl = UILabel().then {
-        $0.text = "알림 요일 설정"
-        $0.font = Pretendard.semibold.dynamicFont(style: .title3)
-        $0.textAlignment = .center
-    }
-    
-    let saveBtn = UIButton().then {
-        $0.setTitle("저장", for: .normal)
-        $0.setTitleColor(.skyBlue, for: .normal)
-        $0.titleLabel?.font = Pretendard.regular.dynamicFont(style: .body)
-    }
-    
-    let titleStack = UIStackView().then {
-        $0.axis = .horizontal
-        $0.distribution = .equalSpacing
-    }
+class DaySelectViewController: BaseAlarmSettingSheetViewController {
     
     let tableView = UITableView().then {
         $0.backgroundColor = .white
     }
     
-    //MARK: - lifeCycle
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        viewModel.selectday = DayTimeViewModel.dayCheck.value
-        view.backgroundColor = .white
-        let smallId = UISheetPresentationController.Detent.Identifier("small")
-        let smallDetent = UISheetPresentationController.Detent.custom(identifier: smallId) { context in
-            return UIScreen.main.bounds.size.height - 450
-        }
-        if let sheet = sheetPresentationController {
-            sheet.detents = [smallDetent]
-            sheet.largestUndimmedDetentIdentifier = smallId
-            sheet.prefersGrabberVisible = true
-            sheet.preferredCornerRadius = 8
-            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
-        }
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(DayTableViewCell.self, forCellReuseIdentifier: DayTableViewCell.identifier)
-        setupLayout()
-        buttonTapped()
-    }
     // MARK: - Layout
-    func setupLayout() {
-        
-        [cancelBtn, titleLbl, saveBtn].forEach {
-            titleStack.addArrangedSubview($0)
-        }
-        
-        view.addSubview(titleStack)
+    override func setLayout() {
+        super.setLayout()
         view.addSubview(tableView)
-        
-        titleStack.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(25)
-            $0.leading.trailing.equalToSuperview().inset(20)
-        }
         
         tableView.snp.makeConstraints {
             $0.top.equalTo(titleStack.snp.bottom).offset(20)
@@ -89,26 +30,30 @@ class DaySelectViewController: UIViewController {
         }
     }
     
-    func buttonTapped() {
-        cancelBtn.rx.tap.subscribe { [weak self] _ in
-            self?.dismiss(animated: true)
-        }.disposed(by: disposeBag)
-        
-        saveBtn.rx.tap.subscribe { [weak self] _ in
-            self?.dismiss(animated: true)
-            if self?.viewModel.selectday.contains(1) == false {
-                UserDefaults.standard.set(false, forKey: UserDefaultsKeys.writeSwitch.rawValue)
-                for i in 0...6 {
-                    self?.viewModel.selectday[i] = 1
-                }
-            }
-            DayTimeViewModel.dayCheck.accept((self?.viewModel.selectday)!)
-        }.disposed(by: disposeBag)
-        
+    override func initialize() {
+        titleString = "알림 요일 설정"
+        viewModel.selectday = DayTimeViewModel.dayCheck.value
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(DayTableViewCell.self, forCellReuseIdentifier: DayTableViewCell.identifier)
+    }
+    
+    override func buttonTapped() {
+        super.buttonTapped()
         tableView.rx.itemSelected.subscribe { [weak self] item in
             self?.viewModel.dayimage(row: item.row)
             self?.tableView.reloadData()
         }.disposed(by: disposeBag)
+    }
+    
+    override func saveAction() {
+        if self.viewModel.selectday.contains(1) == false {
+            UserDefaults.standard.set(false, forKey: UserDefaultsKeys.writeSwitch.rawValue)
+            for i in 0...6 {
+                self.viewModel.selectday[i] = 1
+            }
+        }
+        DayTimeViewModel.dayCheck.accept((self.viewModel.selectday))
     }
 }
 

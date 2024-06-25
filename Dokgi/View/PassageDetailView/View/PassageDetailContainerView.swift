@@ -16,10 +16,20 @@ class PassageDetailContainerView: UIView {
         $0.backgroundColor = .lightPastelBlue
     }
     
+    lazy var passageScrollView = UIScrollView().then {
+        $0.backgroundColor = .clear
+    }
+    
     lazy var passageTextLbl = UILabel().then {
         $0.textAlignment = .left
         $0.font = Pretendard.regular.dynamicFont(style: .callout)
         $0.numberOfLines = 20
+        $0.textColor = .black
+    }
+    
+    let copyButton = UIButton().then {
+        $0.backgroundColor = .clear
+        $0.setImage(.copyicon, for: .normal)
     }
     
     let keywordStackView = UIStackView().then {
@@ -30,10 +40,11 @@ class PassageDetailContainerView: UIView {
     let keywordLabel = UILabel().then {
         $0.text = "키워드"
         $0.font = Pretendard.semibold.dynamicFont(style: .body)
+        $0.textColor = .black
     }
     
     let noKeywordLabel = UILabel().then {
-        $0.text = "키워드 없습니다"
+        $0.text = "키워드가 없습니다"
         $0.font = Pretendard.regular.dynamicFont(style: .callout)
         $0.textColor = .bookTextGray
     }
@@ -56,6 +67,7 @@ class PassageDetailContainerView: UIView {
     let writeDateTitle = UILabel().then {
         $0.text = "기록날짜"
         $0.font = Pretendard.semibold.dynamicFont(style: .body)
+        $0.textColor = .black
     }
     
     lazy var writeDateDay = UILabel().then {
@@ -71,6 +83,7 @@ class PassageDetailContainerView: UIView {
     let pageTitle = UILabel().then {
         $0.text = "페이지"
         $0.font = Pretendard.semibold.dynamicFont(style: .body)
+        $0.textColor = .black
     }
     
     lazy var pageWriteLbl = UILabel().then {
@@ -86,17 +99,19 @@ class PassageDetailContainerView: UIView {
         $0.isHidden = true
         $0.layer.cornerRadius = 8
         $0.clipsToBounds = true
+        $0.textColor = .black
     }
     
     let keywordTextField = UITextField().then {
         $0.font = Pretendard.regular.dynamicFont(style: .callout)
-        $0.placeholder = "키워드를 입력해 주세요"
+        $0.attributedPlaceholder = NSAttributedString(string: "키워드를 입력해 주세요", attributes: [NSAttributedString.Key.foregroundColor: UIColor.textFieldGray])
         $0.layer.cornerRadius = 10
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor(resource: .keywordBorder).cgColor
         $0.leftView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 22.0, height: 0.0))
         $0.leftViewMode = .always
         $0.isHidden = true
+        $0.textColor = .black
         $0.snp.makeConstraints {
             $0.height.equalTo(33)
         }
@@ -110,6 +125,7 @@ class PassageDetailContainerView: UIView {
     let pageTextField = UITextField().then {
         $0.font = Pretendard.regular.dynamicFont(style: .callout)
         $0.placeholder = "페이지"
+        $0.textColor = .black
         $0.layer.cornerRadius = 8
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor(resource: .borderGray).cgColor
@@ -138,8 +154,10 @@ class PassageDetailContainerView: UIView {
     // MARK: - Layout
     func setupLayout() {
         addSubview(textView)
-        textView.addSubview(passageTextLbl)
+        textView.addSubview(passageScrollView)
+        passageScrollView.addSubview(passageTextLbl)
         textView.addSubview(passageTextField)
+        textView.addSubview(copyButton)
         addSubview(keywordStackView)
         [keywordLabel, keywordTextField, noKeywordLabel,keywordCollectionView].forEach {
             keywordStackView.addArrangedSubview($0)
@@ -160,17 +178,29 @@ class PassageDetailContainerView: UIView {
         textView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.horizontalEdges.equalToSuperview().inset(20)
-            $0.height.equalTo(256)
+            $0.height.equalTo(276)
+        }
+        
+        passageScrollView.snp.makeConstraints {
+            $0.horizontalEdges.equalToSuperview().inset(20)
+            $0.top.equalToSuperview().inset(15)
+            $0.bottom.equalToSuperview().inset(46)
         }
         
         passageTextLbl.snp.makeConstraints {
-            $0.horizontalEdges.equalToSuperview().inset(20)
-            $0.top.equalToSuperview().inset(15)
+            $0.top.width.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(10)
         }
         
         passageTextField.snp.makeConstraints {
             $0.horizontalEdges.equalToSuperview().inset(20)
             $0.verticalEdges.equalToSuperview().inset(15)
+        }
+        
+        copyButton.snp.makeConstraints {
+            $0.top.equalTo(passageScrollView.snp.bottom).offset(10)
+            $0.trailing.equalToSuperview().inset(20)
+            $0.width.height.equalTo(24)
         }
         
         keywordStackView.snp.makeConstraints {
@@ -186,7 +216,7 @@ class PassageDetailContainerView: UIView {
         pageStackView.snp.makeConstraints {
             $0.top.equalTo(writeStackView.snp.bottom).offset(30)
             $0.horizontalEdges.equalToSuperview().inset(20)
-            $0.bottom.equalToSuperview().inset(291)
+            $0.bottom.equalToSuperview().inset(10)
         }
     }
     
@@ -213,7 +243,7 @@ class PassageDetailContainerView: UIView {
             $0.isHidden = false
         }
         passageTextField.text = passageTextLbl.text
-        [passageTextLbl, pageWriteLbl].forEach {
+        [passageTextLbl, copyButton, pageWriteLbl].forEach {
             $0.isHidden = true
         }
     }
@@ -222,7 +252,7 @@ class PassageDetailContainerView: UIView {
         [passageTextField, keywordTextField, pageTextField, pageSegment].forEach {
             $0.isHidden = true
         }
-        [passageTextLbl, pageWriteLbl].forEach {
+        [passageTextLbl, copyButton, pageWriteLbl].forEach {
             $0.isHidden = false
         }
     }

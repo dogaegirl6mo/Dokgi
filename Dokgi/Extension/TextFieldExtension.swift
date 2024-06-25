@@ -16,23 +16,25 @@ extension UITextField {
             title = "페이지"
             message = "페이지를 입력해 주세요"
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
             return alert
         }
         
         if let pageNumberText = self.text, let _ = Int(pageNumberText) {
             if pageType == 0 && Int((self.text)!) ?? 0 <= 0 {
+                title = "페이지 값 오류"
+                message = "0 이상을 입력하세요."
                 let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
                 return alert
             } else if pageType == 1 && Int((self.text)!) ?? 101 > 100 {
+                title = "% 값 오류"
+                message = "100이하를 입력하세요."
                 let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
                 return alert
             }
         } else {
+            title = "입력 값 오류"
+            message = "숫자를 입력하세요."
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
             return alert
         }
         return UIAlertController()

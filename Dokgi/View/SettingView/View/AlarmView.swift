@@ -14,6 +14,7 @@ class AlarmView: UIView {
     let alarmTitle = UILabel().then {
         $0.text = "알림 설정"
         $0.font = Pretendard.bold.dynamicFont(style: .title3)
+        $0.textColor = .black
     }
     
     let remindSwitch = UISwitch().then {
@@ -28,6 +29,7 @@ class AlarmView: UIView {
     let remindTitle = UILabel().then {
         $0.text = "리마인드 알림"
         $0.font = Pretendard.regular.dynamicFont(style: .body)
+        $0.textColor = .black
     }
     
     let remindDescription = UILabel().then {
@@ -59,8 +61,12 @@ class AlarmView: UIView {
     
     let remindTimeStack = UIStackView().then {
         $0.axis = .horizontal
-        $0.spacing = 100
         $0.distribution = .equalSpacing
+    }
+    
+    let borderStack = UIStackView().then {
+        $0.spacing = 20
+        $0.axis = .vertical
     }
     
     let writeSwitch = UISwitch().then {
@@ -74,6 +80,7 @@ class AlarmView: UIView {
     
     let writeTitle = UILabel().then {
         $0.text = "기록하기 알림"
+        $0.textColor = .black
         $0.font = Pretendard.regular.dynamicFont(style: .body)
     }
     
@@ -120,7 +127,6 @@ class AlarmView: UIView {
     
     let writeTimeStack = UIStackView().then {
         $0.axis = .horizontal
-        $0.spacing = 100
         $0.distribution = .equalSpacing
     }
     
@@ -142,13 +148,15 @@ class AlarmView: UIView {
         [remindTitle, remindDescription].forEach {
             remindStack.addArrangedSubview($0)
         }
+        addSubview(borderStack)
+        [remindTimeStack, border].forEach {
+            borderStack.addArrangedSubview($0)
+        }
         
-        addSubview(remindTimeStack)
         [remindTimeLbl, remindTimeBtn].forEach {
             remindTimeStack.addArrangedSubview($0)
         }
         
-        addSubview(border)
         addSubview(writeSwitch)
         addSubview(writeSwitchBtn)
         addSubview(writeStack)
@@ -178,6 +186,7 @@ class AlarmView: UIView {
         
         remindSwitch.snp.makeConstraints {
             $0.centerY.equalTo(remindStack)
+            $0.leading.equalTo(remindStack.snp.trailing).offset(27)
             $0.trailing.equalToSuperview().inset(27)
         }
         
@@ -186,14 +195,12 @@ class AlarmView: UIView {
             $0.trailing.equalToSuperview().inset(27)
         }
         
-        remindTimeStack.snp.makeConstraints {
+        borderStack.snp.makeConstraints {
             $0.top.equalTo(remindStack.snp.bottom).offset(28)
             $0.leading.trailing.equalToSuperview().inset(27)
         }
         
         border.snp.makeConstraints {
-            $0.top.equalTo(remindTimeStack.snp.bottom).offset(20)
-            $0.leading.trailing.equalToSuperview().inset(27)
             $0.height.equalTo(1)
         }
         

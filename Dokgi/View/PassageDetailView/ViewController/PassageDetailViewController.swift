@@ -23,6 +23,7 @@ class PassageDetailViewController: UIViewController {
     
     lazy var titleLbl = UILabel().then {
         $0.font = Pretendard.semibold.dynamicFont(style: .title3)
+        $0.textColor = .black
     }
     
     let xBtn = UIButton().then {
@@ -43,7 +44,7 @@ class PassageDetailViewController: UIViewController {
         $0.setImage(.modalEdit, for: .normal)
     }
     
-    let ParagrapScrollView = UIScrollView().then {
+    let detailScrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
     }
     
@@ -82,8 +83,8 @@ class PassageDetailViewController: UIViewController {
             titleStack.addArrangedSubview($0)
         }
         view.addSubview(editBtn)
-        view.addSubview(ParagrapScrollView)
-        ParagrapScrollView.addSubview(containerView)
+        view.addSubview(detailScrollView)
+        detailScrollView.addSubview(containerView)
         
         titleStack.snp.makeConstraints {
             $0.top.equalToSuperview().offset(28)
@@ -96,14 +97,14 @@ class PassageDetailViewController: UIViewController {
             $0.height.equalTo(22)
         }
         
-        ParagrapScrollView.snp.makeConstraints {
+        detailScrollView.snp.makeConstraints {
             $0.top.equalTo(editBtn.snp.bottom).offset(8)
             $0.horizontalEdges.bottom.equalToSuperview()
         }
         
         containerView.snp.makeConstraints {
             $0.edges.equalToSuperview()
-            $0.width.equalTo(ParagrapScrollView.snp.width)
+            $0.width.equalTo(detailScrollView.snp.width)
         }
     }
     
@@ -112,13 +113,6 @@ class PassageDetailViewController: UIViewController {
             self.titleLbl.text = data.name
             self.containerView.passageTextLbl.text = data.text
             self.viewModel.keywords.accept(data.keywords)
-            if self.viewModel.keywords.value.isEmpty {
-                self.containerView.noKeywordLabel.isHidden = false
-                self.containerView.keywordCollectionView.isHidden = true
-            } else {
-                self.containerView.noKeywordLabel.isHidden = true
-                self.containerView.keywordCollectionView.isHidden = false
-            }
             self.containerView.pageWriteLbl.text = "\(data.pageNumber) \(data.pageType)"
             self.containerView.writeDateDay.text = data.date.toString()
         }.disposed(by: disposeBag)
@@ -142,7 +136,7 @@ class PassageDetailViewController: UIViewController {
                 }
             } else {
                 let alert = self.containerView.pageTextField.selectAlert(pageType: self.containerView.pageSegment.selectedIndex)
-                if alert.message == "" {
+                if alert.title == nil {
                     self.containerView.editCompleteLayout()
                     self.sheetPresentationController?.detents = [self.smallDetent]
                     self.editBtn.setTitle("수정하기", for: .normal)
@@ -151,9 +145,14 @@ class PassageDetailViewController: UIViewController {
                     self.editBtn.setImage(.modalEdit, for: .normal)
                     self.viewModel.saveDetail(paragraph: self.containerView.passageTextField.text, page: self.containerView.pageTextField.text ?? "", pageType: self.containerView.pageSegment.selectedIndex)
                 } else {
+                    alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
                     self.present(alert, animated: true)
                 }
             }
+        }.disposed(by: disposeBag)
+        
+        containerView.copyButton.rx.tap.subscribe(with: self) { (self, _) in
+            UIPasteboard.general.string = self.containerView.passageTextLbl.text
         }.disposed(by: disposeBag)
         
         containerView.pageSegment.buttons[0].rx.tap.subscribe { sender in
@@ -181,6 +180,16 @@ class PassageDetailViewController: UIViewController {
         
         containerView.keywordTextField.rx.controlEvent(.editingDidEnd).subscribe(with: self) { (self, _) in
             self.containerView.keywordTextField.text = ""
+        }.disposed(by: disposeBag)
+        
+        viewModel.keywords.subscribe(with: self) { (self, data) in
+            if data.isEmpty {
+                self.containerView.noKeywordLabel.isHidden = false
+                self.containerView.keywordCollectionView.isHidden = true
+            } else {
+                self.containerView.noKeywordLabel.isHidden = true
+                self.containerView.keywordCollectionView.isHidden = false
+            }
         }.disposed(by: disposeBag)
         
         viewModel.keywords.bind(to: containerView.keywordCollectionView.rx.items(cellIdentifier: KeywordCollectionViewCell.identifier,

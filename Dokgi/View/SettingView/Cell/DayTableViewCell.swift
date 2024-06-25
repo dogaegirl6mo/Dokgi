@@ -18,10 +18,12 @@ class DayTableViewCell: UITableViewCell {
     let dayLabel = UILabel().then {
         $0.text = ""
         $0.font = Pretendard.regular.dynamicFont(style: .body)
+        $0.textColor = .black
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .white
         setupLayout()
     }
     

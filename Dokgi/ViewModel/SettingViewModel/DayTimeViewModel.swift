@@ -12,9 +12,9 @@ import NotificationCenter
 
 class DayTimeViewModel {
     
-    static var dayCheck = BehaviorRelay<[Int]>(value: UserDefaults.standard.array(forKey: "writeWeek") as? [Int] ?? [1, 1, 1, 1, 1, 1, 1])
-    static var remindTime = BehaviorRelay<[Int]>(value: UserDefaults.standard.array(forKey: "remindTime") as? [Int] ?? [3, 00, 1])
-    static var writeTime = BehaviorRelay<[Int]>(value: UserDefaults.standard.array(forKey: "writeTime") as? [Int] ?? [3, 00, 1])
+    static var dayCheck = BehaviorRelay<[Int]>(value: UserDefaults.standard.array(forKey: UserDefaultsKeys.writeWeek.rawValue) as? [Int] ?? [1, 1, 1, 1, 1, 1, 1])
+    static var remindTime = BehaviorRelay<[Int]>(value: UserDefaults.standard.array(forKey: UserDefaultsKeys.remindTime.rawValue) as? [Int] ?? [3, 00, 1])
+    static var writeTime = BehaviorRelay<[Int]>(value: UserDefaults.standard.array(forKey: UserDefaultsKeys.writeTime.rawValue) as? [Int] ?? [3, 00, 1])
     
     let hourArr = [Int](1...12)
     let minArr = [Int](00...59).map { String($0).count == 1 ? "0\($0)" : "\($0)" }

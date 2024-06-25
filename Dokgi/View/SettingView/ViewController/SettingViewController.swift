@@ -19,6 +19,7 @@ class SettingViewController: UIViewController{
     let titleLbl = UILabel().then {
         $0.text = "설정"
         $0.font = Pretendard.bold.dynamicFont(style: .title2)
+        $0.textColor = .black
     }
     
     //MARK: - lifeCycle
@@ -94,6 +95,11 @@ class SettingViewController: UIViewController{
             if UserDefaults.standard.bool(forKey: UserDefaultsKeys.notification.rawValue) == true {
                 self.viewModel.removePendingNotification(identifiers: "remindTime", time: DayTimeViewModel.remindTime.value, on: bool)
             }
+            if bool == false {
+                self.alarmView.remindTimeStack.isHidden = true
+            } else {
+                self.alarmView.remindTimeStack.isHidden = false
+            }
         }.disposed(by: disposeBag)
         
         alarmView.remindSwitchBtn.rx.tap.subscribe { _ in
@@ -103,6 +109,13 @@ class SettingViewController: UIViewController{
         alarmView.writeSwitch.rx.isOn.subscribe(with: self) { (self, bool) in
             if UserDefaults.standard.bool(forKey: UserDefaultsKeys.notification.rawValue) == true {
                 self.viewModel.removePendingNotification(identifiers: "writeTime", time: DayTimeViewModel.remindTime.value, on: bool)
+            }
+            if bool == false {
+                self.alarmView.writeTimeStack.isHidden = true
+                self.alarmView.writeWeekStack.isHidden = true
+            } else {
+                self.alarmView.writeTimeStack.isHidden = false
+                self.alarmView.writeWeekStack.isHidden = false
             }
         }.disposed(by: disposeBag)
         
