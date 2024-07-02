@@ -162,10 +162,12 @@ class PassageDetailViewController: UIViewController {
         
         containerView.pageSegment.buttons[0].rx.tap.subscribe { sender in
             self.containerView.pageSegment.selectedIndex = 0
+            self.containerView.pageTitle.text = "페이지"
         }.disposed(by: disposeBag)
         
         containerView.pageSegment.buttons[1].rx.tap.subscribe { sender in
             self.containerView.pageSegment.selectedIndex = 1
+            self.containerView.pageTitle.text = "퍼센트"
         }.disposed(by: disposeBag)
         
         containerView.passageTextField.rx.text.orEmpty.subscribe(with: self) { (self, text) in

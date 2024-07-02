@@ -174,6 +174,15 @@ extension BookSearchViewController: UISearchBarDelegate {
             containerView.tableView.reloadData()
             hideSearchResults()
             showRecentSearches()
+        } else {
+            guard let query = searchBar.text, !query.isEmpty else { return }
+            viewModel.query = query
+            viewModel.startIndex = 1
+            viewModel.searchResults = []
+            fetchBooks(query: query, startIndex: viewModel.startIndex)
+            viewModel.saveRecentSearch(query)
+            showSearchResults()
+            hideRecentSearches()
         }
     }
     

@@ -203,18 +203,18 @@ class PassageDetailContainerView: UIView {
             $0.width.height.equalTo(24)
         }
         
-        keywordStackView.snp.makeConstraints {
+        writeStackView.snp.makeConstraints {
             $0.top.equalTo(textView.snp.bottom).offset(32)
             $0.horizontalEdges.equalToSuperview().inset(20)
         }
         
-        writeStackView.snp.makeConstraints {
-            $0.top.equalTo(keywordStackView.snp.bottom).offset(20)
+        pageStackView.snp.makeConstraints {
+            $0.top.equalTo(writeStackView.snp.bottom).offset(20)
             $0.horizontalEdges.equalToSuperview().inset(20)
         }
         
-        pageStackView.snp.makeConstraints {
-            $0.top.equalTo(writeStackView.snp.bottom).offset(30)
+        keywordStackView.snp.makeConstraints {
+            $0.top.equalTo(pageStackView.snp.bottom).offset(20)
             $0.horizontalEdges.equalToSuperview().inset(20)
             $0.bottom.equalToSuperview().inset(10)
         }

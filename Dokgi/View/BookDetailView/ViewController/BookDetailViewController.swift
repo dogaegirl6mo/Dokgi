@@ -98,6 +98,8 @@ class BookDetailViewController: UIViewController {
         $0.setButtonTitle("구절 추가하기")
     }
 
+    let backButton = BackButton()
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,6 +107,10 @@ class BookDetailViewController: UIViewController {
         passageTableView.dataSource = self
         passageTableView.delegate = self
         passageTableView.register(PassageTableViewCell.self, forCellReuseIdentifier: PassageTableViewCell.identifier)
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
+        backButton.rx.tap.subscribe(with: self) { (self, _) in
+            self.navigationController?.popViewController(animated: true)
+        }.disposed(by: disposeBag)
         setConstraints()
         bindViewModel()
         tappedAddPassageButton()

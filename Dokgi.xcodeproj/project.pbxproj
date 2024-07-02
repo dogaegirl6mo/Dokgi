@@ -53,6 +53,7 @@
 		85BC847F2C21F37900D8A27E /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F2DB202C16FF860020B0AA /* CoreDataManager.swift */; };
 		85BC84812C21F60800D8A27E /* VerseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB23869E2C19B5FC00E6FACE /* VerseModel.swift */; };
 		A722B5892C1C715000E43FC9 /* SegmentControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A722B5882C1C715000E43FC9 /* SegmentControlView.swift */; };
+		A73F4B232C33186100300189 /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73F4B222C33186100300189 /* BackButton.swift */; };
 		A74874642C0D7E0600B830EE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74874632C0D7E0600B830EE /* SceneDelegate.swift */; };
 		A748746C2C0D7E0700B830EE /* Dokgi.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A748746A2C0D7E0700B830EE /* Dokgi.xcdatamodeld */; };
 		A748746E2C0D7E0800B830EE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A748746D2C0D7E0800B830EE /* Assets.xcassets */; };
@@ -173,6 +174,7 @@
 		85BC84722C21B70600D8A27E /* DokgiWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DokgiWidgetExtension.entitlements; sourceTree = "<group>"; };
 		85BC84822C22F7CE00D8A27E /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		A722B5882C1C715000E43FC9 /* SegmentControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentControlView.swift; sourceTree = "<group>"; };
+		A73F4B222C33186100300189 /* BackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButton.swift; sourceTree = "<group>"; };
 		A748745E2C0D7E0600B830EE /* Dokgi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dokgi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A74874612C0D7E0600B830EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A74874632C0D7E0600B830EE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -553,6 +555,7 @@
 				854E15872C25534700FE5256 /* SortMenuView.swift */,
 				854E15892C25AE3E00FE5256 /* SearchBar.swift */,
 				854E158D2C25F2FE00FE5256 /* AddPassageButton.swift */,
+				A73F4B222C33186100300189 /* BackButton.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -946,6 +949,7 @@
 				3C73E2992C1937C2004B1BF8 /* TodayPassageCell.swift in Sources */,
 				3C73E2962C17D8B8004B1BF8 /* MetricUtil.swift in Sources */,
 				3C73E2A02C1AB164004B1BF8 /* CurrentLevelCollectionFlowLayout.swift in Sources */,
+				A73F4B232C33186100300189 /* BackButton.swift in Sources */,
 				A75D3D772C1B493F006C2EB3 /* DateExtension.swift in Sources */,
 				7B487B0E2C2503940082EF92 /* PassageCollectionView.swift in Sources */,
 				A78D2A1C2C216FCF00F8AC72 /* LibraryViewModel.swift in Sources */,

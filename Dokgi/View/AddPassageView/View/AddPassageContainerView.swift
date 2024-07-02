@@ -209,7 +209,7 @@ class AddPassageContainerView: UIView {
         }
         
         keywordLabel.snp.makeConstraints {
-            $0.top.equalTo(textViewBoder.snp.bottom).offset(32)
+            $0.top.equalTo(pageLabel.snp.bottom).offset(32)
             $0.horizontalEdges.equalToSuperview().inset(16)
         }
         
@@ -225,6 +225,11 @@ class AddPassageContainerView: UIView {
             $0.height.equalTo(35)
         }
         
+        pageLabel.snp.remakeConstraints {
+            $0.top.equalTo(textViewBoder.snp.bottom).offset(32)
+            $0.leading.equalToSuperview().inset(16)
+        }
+        
         pageNumberTextField.snp.makeConstraints {
             $0.centerY.equalTo(pageLabel.snp.centerY)
             $0.leading.equalTo(pageLabel.snp.trailing).offset(8)
@@ -235,12 +240,6 @@ class AddPassageContainerView: UIView {
         pageSegment.snp.makeConstraints {
             $0.centerY.equalTo(pageLabel.snp.centerY)
             $0.trailing.equalToSuperview().inset(16)
-        }
-        
-        recordButton.snp.makeConstraints {
-            $0.top.equalTo(pageLabel.snp.bottom).offset(60)
-            $0.centerX.equalToSuperview()
-            $0.bottom.equalToSuperview().inset(24)
         }
     }
     
@@ -268,10 +267,12 @@ class AddPassageContainerView: UIView {
     func updateViewForKeyword(isAdded: Bool) {
         keywordCollectionView.isHidden = isAdded
 
-        pageLabel.snp.remakeConstraints {
-            $0.top.equalTo(isAdded ? keywordField.snp.bottom : keywordCollectionView.snp.bottom)
-                .offset(isAdded ? 24 : 60)
-            $0.leading.equalToSuperview().offset(16)
+        recordButton.snp.remakeConstraints {
+            $0.top.equalTo(isAdded ? keywordField.snp.bottom : keywordCollectionView.snp.bottom).offset(32)
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(24)
+            $0.width.equalTo(353)
+            $0.height.equalTo(53)
         }
         layoutIfNeeded()
     }
