@@ -35,7 +35,7 @@ class HomeViewModel {
         }
         return 1
     }
-
+    
     init() {
         
         passages
@@ -64,39 +64,32 @@ class HomeViewModel {
         // 구절 추가 업데이트
         CoreDataManager.shared.passageData
             .subscribe(onNext: { [weak self] passages in
-                self?.passages.accept(passages)
+                DispatchQueue.main.async {
+                    self?.passages.accept(passages)
+                    self?.loadTodayVerses()
+                }
             })
             .disposed(by: disposeBag)
-        
-        // 오늘의 구절 업데이트
-        CoreDataManager.shared.bookData
-            .skip(1)
-            .take(1)
-            .subscribe(onNext: { [weak self] _ in
-                self?.loadTodayVerses()
-            })
-            .disposed(by: disposeBag)
-
-        loadTodayVerses()
     }
     
     // MARK: - Today's verese
     func loadTodayVerses() {
         let savedDate = UserDefaults.standard.string(forKey: UserDefaultsKeys.todayDate.rawValue)
         
-        if passages.value.count > 5 {
+        guard let savedVerses = UserDefaults.standard.array(forKey: UserDefaultsKeys.shuffledPassage.rawValue) as? [String] else {
+            shuffleAndSaveVerses() 
+            return
+        }
+        
+        if savedVerses.count == 5 { // 5개 일 때 실행
             // 날짜에 따른 구절 업데이트
-            if today != savedDate {
+            if today != savedDate { // 5개 이고 다른 날 일때
                 shuffleAndSaveVerses()
-            } else {
-                if let savedVerses = UserDefaults.standard.array(forKey: UserDefaultsKeys.shuffledPassage.rawValue) as? [String] {
-                    randomVerses.accept(savedVerses)
-                } else {
-                    shuffleAndSaveVerses()
-                }
+            } else { // 5개 이고 같은 날일 때
+                randomVerses.accept(savedVerses)
             }
-        } else {
-            randomVerses.accept(passages.value.map { $0.passage })
+        } else { // 5개 이하 혹은 초과 일 때
+            shuffleAndSaveVerses()
         }
     }
     

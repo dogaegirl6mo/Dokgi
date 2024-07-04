@@ -68,7 +68,7 @@ class AddPassageContainerView: UIView {
         $0.clipsToBounds = true
     }
     
-    lazy var verseTextView = UITextView().then {
+    lazy var passageTextView = UITextView().then {
         $0.text = "텍스트를 입력하세요"
         $0.textContainerInset = UIEdgeInsets(top: 0.0, left: 16.0, bottom: 16.0, right: 16.0)
         $0.showsVerticalScrollIndicator = false
@@ -167,7 +167,7 @@ class AddPassageContainerView: UIView {
     
     // MARK: - setupViews
     private func setupViews() {
-        [infoView, searchButton, scanButton, passageLabel, textViewBoder, verseTextView, characterCountLabel, pencilImageView, keywordLabel, keywordField, keywordCollectionView, pageLabel, pageNumberTextField, pageSegment, recordButton].forEach { addSubview($0) }
+        [infoView, searchButton, scanButton, passageLabel, textViewBoder, passageTextView, characterCountLabel, pencilImageView, keywordLabel, keywordField, keywordCollectionView, pageLabel, pageNumberTextField, pageSegment, recordButton].forEach { addSubview($0) }
     }
     
     // MARK: - 제약조건
@@ -194,7 +194,7 @@ class AddPassageContainerView: UIView {
             $0.height.equalTo(329)
         }
         
-        verseTextView.snp.makeConstraints {
+        passageTextView.snp.makeConstraints {
             $0.top.equalTo(scanButton.snp.bottom).offset(35)
             $0.horizontalEdges.equalToSuperview().inset(18)
             $0.bottom.equalTo(pencilImageView.snp.top).inset(8)
@@ -209,7 +209,7 @@ class AddPassageContainerView: UIView {
         }
         
         keywordLabel.snp.makeConstraints {
-            $0.top.equalTo(textViewBoder.snp.bottom).offset(32)
+            $0.top.equalTo(pageLabel.snp.bottom).offset(32)
             $0.horizontalEdges.equalToSuperview().inset(16)
         }
         
@@ -225,6 +225,11 @@ class AddPassageContainerView: UIView {
             $0.height.equalTo(35)
         }
         
+        pageLabel.snp.remakeConstraints {
+            $0.top.equalTo(textViewBoder.snp.bottom).offset(32)
+            $0.leading.equalToSuperview().inset(16)
+        }
+        
         pageNumberTextField.snp.makeConstraints {
             $0.centerY.equalTo(pageLabel.snp.centerY)
             $0.leading.equalTo(pageLabel.snp.trailing).offset(8)
@@ -235,12 +240,6 @@ class AddPassageContainerView: UIView {
         pageSegment.snp.makeConstraints {
             $0.centerY.equalTo(pageLabel.snp.centerY)
             $0.trailing.equalToSuperview().inset(16)
-        }
-        
-        recordButton.snp.makeConstraints {
-            $0.top.equalTo(pageLabel.snp.bottom).offset(60)
-            $0.centerX.equalToSuperview()
-            $0.bottom.equalToSuperview().inset(24)
         }
     }
     
@@ -256,7 +255,6 @@ class AddPassageContainerView: UIView {
         searchButton.isHidden = isSearched
         infoView.isHidden = !isSearched
 
-
         scanButton.snp.remakeConstraints {
             $0.trailing.equalToSuperview().inset(16)
             $0.top.equalTo(isSearched ? infoView.snp.bottom : searchButton.snp.bottom).offset(16)
@@ -268,10 +266,12 @@ class AddPassageContainerView: UIView {
     func updateViewForKeyword(isAdded: Bool) {
         keywordCollectionView.isHidden = isAdded
 
-        pageLabel.snp.remakeConstraints {
-            $0.top.equalTo(isAdded ? keywordField.snp.bottom : keywordCollectionView.snp.bottom)
-                .offset(isAdded ? 24 : 60)
-            $0.leading.equalToSuperview().offset(16)
+        recordButton.snp.remakeConstraints {
+            $0.top.equalTo(isAdded ? keywordField.snp.bottom : keywordCollectionView.snp.bottom).offset(32)
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(24)
+            $0.width.equalTo(353)
+            $0.height.equalTo(53)
         }
         layoutIfNeeded()
     }

@@ -161,7 +161,6 @@ class HomeView: UIView {
             }
         }
         
-        
         nextLengthLabel.snp.makeConstraints {
             $0.top.equalTo(currentLevelCollectionView.snp.bottom).offset(20)
             $0.horizontalEdges.equalToSuperview().inset(35)
@@ -170,13 +169,6 @@ class HomeView: UIView {
         lengthSlider.snp.makeConstraints {
             $0.horizontalEdges.equalToSuperview().inset(35)
             $0.top.equalTo(nextLengthLabel.snp.bottom).offset(18)
-        }
-        
-        currentLevelBubble.snp.makeConstraints {
-            $0.width.equalTo(38)
-            $0.height.equalTo(41)
-            $0.top.equalTo(lengthSlider.snp.bottom)
-            $0.centerX.equalTo(lengthSlider.snp.trailing).multipliedBy(1)
         }
         
         currentLevelImage.snp.makeConstraints {
@@ -203,7 +195,7 @@ class HomeView: UIView {
         
         todayVersesColletionView.snp.makeConstraints {
             $0.top.equalTo(todayVersesLabel.snp.bottom).offset(14)
-            $0.bottom.equalToSuperview().offset(-63)
+            $0.bottom.equalToSuperview().offset(-43)
             $0.horizontalEdges.equalToSuperview().inset(20)
             $0.centerX.equalToSuperview()
             $0.height.equalTo(158)

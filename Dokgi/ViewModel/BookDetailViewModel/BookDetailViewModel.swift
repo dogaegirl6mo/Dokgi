@@ -8,7 +8,7 @@
 import Foundation
 import RxCocoa
 
-class BookDetailViewModel {
+final class BookDetailViewModel {
     
     var bookInfo = BehaviorRelay(value: Book(title: "", author: "", image: "", passages: []))
     
@@ -23,5 +23,10 @@ class BookDetailViewModel {
     
     func makeAddVerseViewData() -> Item {
         return Item(title: bookInfo.value.title, image: bookInfo.value.image, author: bookInfo.value.author)
+    }
+    
+    func sortPassageData() {
+        let sortedData = bookInfo.value.passages.sorted { $0.date < $1.date }
+        bookInfo.accept(Book(title: bookInfo.value.title, author: bookInfo.value.author, image: bookInfo.value.image, passages: sortedData))
     }
 }

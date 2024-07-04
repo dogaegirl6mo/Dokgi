@@ -17,7 +17,7 @@ class PassageCollectionViewCell: UICollectionViewCell {
     
     let deleteButton = UIButton()
     let passageLabel = UILabel()
-    let dateLabel = UILabel()
+    let bookTitleLabel = UILabel()
     weak var delegate: PassageCollectionViewCellDelegate?
     
     override init(frame: CGRect) {
@@ -40,13 +40,14 @@ class PassageCollectionViewCell: UICollectionViewCell {
         passageLabel.lineBreakMode = .byCharWrapping
         passageLabel.textColor = .black
         
-        dateLabel.font = Pretendard.regular.dynamicFont(style: .caption2)
-        dateLabel.textColor = .alarmMemoGray
-        dateLabel.numberOfLines = 1
+        bookTitleLabel.font = Pretendard.regular.dynamicFont(style: .caption2)
+        bookTitleLabel.textColor = .alarmMemoGray
+        bookTitleLabel.numberOfLines = 3
+        bookTitleLabel.lineBreakMode = .byCharWrapping
     }
     
     func setConstraints() {
-        [deleteButton, passageLabel, dateLabel].forEach {
+        [deleteButton, passageLabel, bookTitleLabel].forEach {
             contentView.addSubview($0)
         }
         
@@ -59,9 +60,9 @@ class PassageCollectionViewCell: UICollectionViewCell {
             $0.top.trailing.leading.equalToSuperview().inset(15)
         }
         
-        dateLabel.snp.makeConstraints {
+        bookTitleLabel.snp.makeConstraints {
             $0.top.equalTo(passageLabel.snp.bottom).offset(30)
-            $0.bottom.trailing.equalToSuperview().inset(15)
+            $0.leading.trailing.equalToSuperview().inset(15)
         }
     }
     

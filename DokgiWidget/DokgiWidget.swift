@@ -28,7 +28,7 @@ struct Provider: TimelineProvider {
         let nextDayMidnight = Calendar.current.date(byAdding: .day, value: 1, to: midnight)!
         CoreDataManager.shared.readPassage()
         let randomPassage = CoreDataManager.shared.passageData.value.randomElement()?.passage ?? "누군가를 있는 그대로 존중한다는 것은 그만큼 어려운 일이다."
-        let entry = SimpleEntry(date: currentDate, passage: randomPassage)
+        let entry = SimpleEntry(date: midnight, passage: randomPassage)
         let timeline = Timeline(entries: [entry], policy: .after(nextDayMidnight))
         completion(timeline)
     }

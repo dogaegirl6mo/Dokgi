@@ -20,11 +20,18 @@ extension UITextField {
         }
         
         if let pageNumberText = self.text, let _ = Int(pageNumberText) {
-            if pageType == 0 && Int((self.text)!) ?? 0 <= 0 {
-                title = "페이지 값 오류"
-                message = "0 이상을 입력하세요."
-                let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-                return alert
+            if pageType == 0 {
+                if Int((self.text)!) ?? 0 <= 0  {
+                    title = "페이지 값 오류"
+                    message = "0 이상을 입력하세요."
+                    let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+                    return alert
+                } else if Int((self.text)!) ?? 2501 > 2500 {
+                    title = "페이지 값 오류"
+                    message = "2500 이하를 입력하세요."
+                    let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+                    return alert
+                }
             } else if pageType == 1 && Int((self.text)!) ?? 101 > 100 {
                 title = "% 값 오류"
                 message = "100이하를 입력하세요."

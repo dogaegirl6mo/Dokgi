@@ -9,7 +9,7 @@ import Foundation
 import RxCocoa
 import RxSwift
 
-class PassageViewModel {
+final class PassageViewModel {
     func dataLatest() {
         let sortedData = CoreDataManager.shared.passageData.value.sorted { $0.date > $1.date }
         CoreDataManager.shared.passageData.accept(sortedData)

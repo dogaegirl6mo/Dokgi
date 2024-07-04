@@ -15,7 +15,7 @@ class BaseLibraryAndPassageViewController: UIViewController {
     let disposeBag = DisposeBag()
     let searchBar = SearchBar()
     let sortButton = SortButton()
-    let sortMenuView = SortMenuView()
+    private let sortMenuView = SortMenuView()
     
     let titleLabel = UILabel().then {
         $0.font = Pretendard.bold.dynamicFont(style: .title1)
@@ -57,6 +57,12 @@ class BaseLibraryAndPassageViewController: UIViewController {
         self.navigationController?.navigationBar.isHidden = true
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        searchBar.delegate?.searchBarCancelButtonClicked?(searchBar)
+        sortMenuView.isHidden = true
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
         self.searchBar.resignFirstResponder()
@@ -64,7 +70,43 @@ class BaseLibraryAndPassageViewController: UIViewController {
     }
     
     // MARK: - UI
-    private func setLayout() {
+    
+    // 구절, 서재 각 뷰 컨트롤러에서 사용
+    func setLabelText(title: String, placeholder: String, noResultsMessage: String) {
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.searchBarDarkGray,
+            NSAttributedString.Key.font: Pretendard.regular.dynamicFont(style: .subheadline)
+        ]
+        
+        titleLabel.text = title
+        searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: attributes)
+        noResultsLabel.text = noResultsMessage
+    }
+    
+    func setBinding() {
+        searchBar.searchTextField.rx.controlEvent(.editingDidBegin).subscribe(with: self) { (self, _) in
+            self.searchBar.showsCancelButton = true
+        }.disposed(by: disposeBag)
+        
+        searchBar.rx.cancelButtonClicked.subscribe(with: self) { (self, _) in
+            self.searchBar.text = ""
+            self.searchBar.resignFirstResponder()
+            self.searchBar.showsCancelButton = false
+        }.disposed(by: disposeBag)
+        
+        searchBar.rx.searchButtonClicked.subscribe(with: self) { (self, _) in
+            self.searchBar.resignFirstResponder()
+            self.searchBar.showsCancelButton = false
+        }.disposed(by: disposeBag)
+    }
+    
+    func configureUI() {}
+    func latestButtonAction() {}
+    func oldestButtonAction() {}
+}
+
+private extension BaseLibraryAndPassageViewController {
+    func setLayout() {
         [titleLabel, searchBar, sortButton, sortMenuView, noResultsLabel].forEach {
             self.view.addSubview($0)
         }
@@ -95,25 +137,13 @@ class BaseLibraryAndPassageViewController: UIViewController {
         }
     }
     
-    private func setSortMenuView() {
+    func setSortMenuView() {
         sortMenuView.isHidden = true
         sortMenuView.latestCheckImage.isHidden = false
         sortMenuView.oldestCheckImage.isHidden = true
     }
     
-    // 구절, 서재 각 뷰 컨트롤러에서 사용
-    func setLabelText(title: String, placeholder: String, noResultsMessage: String) {
-        let attributes = [
-            NSAttributedString.Key.foregroundColor: UIColor.searchBarDarkGray,
-            NSAttributedString.Key.font: Pretendard.regular.dynamicFont(style: .subheadline)
-        ]
-        
-        titleLabel.text = title
-        searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: attributes)
-        noResultsLabel.text = noResultsMessage
-    }
-    
-    private func tappedButton() {
+    func tappedButton() {
         sortButton.rx.tap.subscribe(with: self) { (self, _) in
             if self.sortMenuView.isHidden {
                 self.sortMenuView.isHidden = false
@@ -137,27 +167,6 @@ class BaseLibraryAndPassageViewController: UIViewController {
             self.sortMenuView.oldestCheckImage.isHidden = false
             self.oldestButtonAction()
             self.sortMenuView.isHidden = true
-        }.disposed(by: disposeBag)
-    }
-    
-    func latestButtonAction() {}
-    func oldestButtonAction() {}
-    
-    func configureUI() {}
-    func setBinding() {
-        searchBar.searchTextField.rx.controlEvent(.editingDidBegin).subscribe(with: self) { (self, _) in
-            self.searchBar.showsCancelButton = true
-        }.disposed(by: disposeBag)
-        
-        searchBar.rx.cancelButtonClicked.subscribe(with: self) { (self, _) in
-            self.searchBar.text = ""
-            self.searchBar.resignFirstResponder()
-            self.searchBar.showsCancelButton = false
-        }.disposed(by: disposeBag)
-        
-        searchBar.rx.searchButtonClicked.subscribe(with: self) { (self, _) in
-            self.searchBar.resignFirstResponder()
-            self.searchBar.showsCancelButton = false
         }.disposed(by: disposeBag)
     }
 }

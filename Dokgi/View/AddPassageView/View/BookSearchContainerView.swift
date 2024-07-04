@@ -46,12 +46,13 @@ class BookSearchContainerView: UIView {
     let clearAllButton = UIButton(configuration: .plain()).then {
         $0.setTitle("전체 삭제", for: .normal)
         $0.titleLabel?.font = Pretendard.regular.dynamicFont(style: .footnote)
-        $0.setTitleColor(.placeholderText, for: .normal)
+        $0.setTitleColor(.allClearGrey, for: .normal)
         $0.configuration?.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 8)
     }
 
     let noResultsLabel = UILabel().then {
         $0.text = "검색어와 일치하는 책이 없습니다"
+        $0.textColor = .black
         $0.font = Pretendard.regular.dynamicFont(style: .subheadline)
         $0.textAlignment = .center
         $0.isHidden = true

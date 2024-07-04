@@ -25,7 +25,7 @@ class LibraryViewController: BaseLibraryAndPassageViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         CoreDataManager.shared.readBook(text: searchBar.text ?? "")
-    
+        
         if sortButton.sortButtonTitleLabel.text == "최신순" {
             self.libraryViewModel.dataLatest()
         } else {

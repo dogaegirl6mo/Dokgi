@@ -31,7 +31,7 @@ class TabBarViewController: UITabBarController {
         
         // 탭바 컨트롤러에 뷰 컨트롤러 설정
         let controllers = [homePageVC, verseVC, myLibraryVC]
-        viewControllers = controllers.map { UINavigationController(rootViewController: $0) } // RootViewController 설정
+        viewControllers = controllers.map { CustomNavigationController(rootViewController: $0) } // RootViewController 설정
         
         // 탭 바의 색상 설정
         UITabBar.appearance().tintColor = .charcoalBlue // 선택된 아이템

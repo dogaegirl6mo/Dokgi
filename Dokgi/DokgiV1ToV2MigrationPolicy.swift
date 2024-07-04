@@ -37,10 +37,10 @@ class DokgiV1ToV2MigrationPolicy: NSEntityMigrationPolicy {
         passageEntity.setValue(sInstance.value(forKey: "keywords"), forKey: "keywords")
         passageEntity.setValue(bookEntity, forKey: "book")
         
-        if let passages = bookEntity.value(forKey: "passages") as? NSMutableOrderedSet {
+        if let passages = bookEntity.value(forKey: "passages") as? NSMutableSet {
             passages.add(passageEntity)
         } else {
-            bookEntity.setValue(NSMutableOrderedSet(object: passageEntity), forKey: "passages")
+            bookEntity.setValue(NSMutableSet(object: passageEntity), forKey: "passages")
         }
         
         // Associate the source and destination instances

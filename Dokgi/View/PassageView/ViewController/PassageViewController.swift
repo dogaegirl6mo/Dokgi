@@ -4,13 +4,14 @@
 //
 //  Created by t2023-m0095 on 6/10/24.
 //
+
 import RxCocoa
 import RxSwift
 import SnapKit
 import Then
 import UIKit
 
-class PassageViewController: BaseLibraryAndPassageViewController {
+final class PassageViewController: BaseLibraryAndPassageViewController {
     
     let passageCollectionView = PassageCollectionView()
     let passageViewModel = PassageViewModel()
@@ -25,7 +26,7 @@ class PassageViewController: BaseLibraryAndPassageViewController {
     }
     
     let selectionButtonLabel = UILabel().then {
-        $0.text = "선택"
+        $0.text = "편집"
         $0.font = Pretendard.semibold.dynamicFont(style: .headline)
         $0.textColor = .charcoalBlue
     }
@@ -33,7 +34,7 @@ class PassageViewController: BaseLibraryAndPassageViewController {
     let doneButton = UIButton().then {
         $0.titleLabel?.font = Pretendard.semibold.dynamicFont(style: .headline)
         $0.setTitle("완료", for: .normal)
-        $0.setTitleColor(.brightRed, for: .normal)
+        $0.setTitleColor(.systemBlue, for: .normal)
         $0.isHidden = true
     }
     
@@ -41,20 +42,24 @@ class PassageViewController: BaseLibraryAndPassageViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setLabelText(title: "구절", placeholder: "기록한 구절을 검색해보세요", noResultsMessage: "기록한 구절이 없어요\n구절을 등록해 보세요")
-        
         setButtonActions()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         CoreDataManager.shared.readPassage(text: searchBar.text ?? "")
+        
         if self.sortButton.sortButtonTitleLabel.text == "최신순" {
             self.passageViewModel.dataLatest()
         } else {
             self.passageViewModel.dataOldest()
         }
+        
+        self.isEditingMode = false
+        self.selectionButton.isHidden = false
+        self.doneButton.isHidden = true
     }
     
     override func configureUI() {
@@ -106,17 +111,21 @@ class PassageViewController: BaseLibraryAndPassageViewController {
     override func setBinding() {
         super.setBinding()
         CoreDataManager.shared.passageData.subscribe(with: self) { (self, data) in
-            if let layout = self.passageCollectionView.collectionViewLayout as? PassageCollectionViewLayout {
-                layout.invalidateCache()
+            DispatchQueue.main.async {
+                if let layout = self.passageCollectionView.collectionViewLayout as? PassageCollectionViewLayout {
+                    layout.invalidateCache()
+                }
+                self.passageCollectionView.isHidden = data.count < 0
+                self.noResultsLabel.isHidden = data.count > 0
+                
+                if self.searchBar.text == "" {
+                    self.noResultsLabel.text = "기록한 구절이 없어요\n구절을 등록해 보세요"
+                } else {
+                    self.noResultsLabel.text = "검색결과가 없습니다."
+                }
+                
+                self.passageCollectionView.reloadData()
             }
-            self.passageCollectionView.isHidden = data.count < 0
-            self.noResultsLabel.isHidden = data.count > 0
-            if self.searchBar.text == "" {
-                self.noResultsLabel.text = "기록한 구절이 없어요\n구절을 등록해 보세요"
-            } else {
-                self.noResultsLabel.text = "검색결과가 없습니다."
-            }
-            self.passageCollectionView.reloadData()
         }.disposed(by: disposeBag)
         
         searchBar.rx.text.debounce(.milliseconds(250), scheduler: MainScheduler.instance).subscribe(with: self) { (self, text) in
@@ -171,16 +180,15 @@ extension PassageViewController: UICollectionViewDelegate, UICollectionViewDataS
         cell.delegate = self
 
         cell.passageLabel.text = CoreDataManager.shared.passageData.value[indexPath.item].passage
-        let dateString = String(CoreDataManager.shared.passageData.value[indexPath.item].date.toString()).suffix(10)
-        cell.dateLabel.text = String(dateString)
+        cell.bookTitleLabel.text = CoreDataManager.shared.passageData.value[indexPath.item].title
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, heightForTextAtIndexPath indexPath: IndexPath) -> CGFloat {
         let text = CoreDataManager.shared.passageData.value[indexPath.item].passage
-        let date = CoreDataManager.shared.passageData.value[indexPath.item].date.toString().suffix(10)
-        return calculateCellHeight(for: text, for: String(date), in: collectionView)
+        let bookTitle = CoreDataManager.shared.passageData.value[indexPath.item].title
+        return calculateCellHeight(for: text, for: bookTitle!, in: collectionView)
     }
     
     func heightForText(_ text: String, width: CGFloat) -> CGFloat {
@@ -198,13 +206,13 @@ extension PassageViewController: UICollectionViewDelegate, UICollectionViewDataS
         return size.height
     }
     
-    func heightForDateText(_ date: String, width: CGFloat) -> CGFloat {
+    func heightForDateText(_ book: String, width: CGFloat) -> CGFloat {
         let label = UILabel()
-        label.numberOfLines = 0
+        label.numberOfLines = 3
         label.preferredMaxLayoutWidth = width
         label.font = Pretendard.regular.dynamicFont(style: .caption2)
         label.adjustsFontForContentSizeCategory = true
-        label.text = date
+        label.text = book
         
         let constraintSize = CGSize(width: width, height: .greatestFiniteMagnitude)
         let size = label.sizeThatFits(constraintSize)
@@ -212,14 +220,14 @@ extension PassageViewController: UICollectionViewDelegate, UICollectionViewDataS
         return size.height
     }
     
-    func calculateCellHeight(for text: String, for date: String, in collectionView: UICollectionView) -> CGFloat {
+    func calculateCellHeight(for text: String, for book: String, in collectionView: UICollectionView) -> CGFloat {
         let cellPadding: CGFloat = 6
         let leftRightinsets: CGFloat = 15 * 2
         let width = (collectionView.bounds.width - (collectionView.contentInset.left + collectionView.contentInset.right + cellPadding * 4)) / 2 - leftRightinsets + 0.5
         
         let passageLabelHeight = heightForText(text, width: width)
         let passageDateSpacing: CGFloat = 30
-        let dateLabelHeight: CGFloat = heightForDateText(date, width: width)
+        let dateLabelHeight: CGFloat = heightForDateText(book, width: width)
         let topBottomPadding: CGFloat = 14 * 2
         return passageLabelHeight + passageDateSpacing + dateLabelHeight + topBottomPadding
     }
@@ -227,12 +235,17 @@ extension PassageViewController: UICollectionViewDelegate, UICollectionViewDataS
     func tappedDeleteButton(in cell: PassageCollectionViewCell) {
         guard let indexPath = passageCollectionView.indexPath(for: cell) else { return }
         let alert = UIAlertController(title: nil, message: "삭제하시겠습니까?", preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "확인", style: .cancel) { [weak self] _ in
+        let okAction = UIAlertAction(title: "삭제", style: .default) { [weak self] _ in
+            if let savedVerses = UserDefaults.standard.array(forKey: UserDefaultsKeys.shuffledPassage.rawValue) as? [String] {
+                UserDefaults.standard.set(savedVerses.filter{ $0 != CoreDataManager.shared.passageData.value[indexPath.item].passage }, forKey: UserDefaultsKeys.shuffledPassage.rawValue)
+              }
             CoreDataManager.shared.deleteData(passage: CoreDataManager.shared.passageData.value[indexPath.item])
             CoreDataManager.shared.readPassage(text: self?.searchBar.text ?? "")
+            self?.dataSort()
         }
-        alert.addAction(UIAlertAction(title: "취소", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         alert.addAction(okAction)
+        alert.preferredAction = okAction
         self.present(alert, animated: true)
     }
     

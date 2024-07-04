@@ -15,7 +15,6 @@ class TodayPassageCell: UICollectionViewCell {
     let verse = UILabel()
     let bookImage = UIImageView()
 
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupConstraints()
@@ -34,7 +33,8 @@ class TodayPassageCell: UICollectionViewCell {
         }
         
         baseView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.horizontalEdges.equalToSuperview().inset(7.5)
+            $0.verticalEdges.equalToSuperview()
         }
         
         verse.snp.makeConstraints {
@@ -56,7 +56,8 @@ class TodayPassageCell: UICollectionViewCell {
     }
     
     func configureUI() {
-        contentView.backgroundColor = .lightSkyBlue
+        baseView.backgroundColor = .lightSkyBlue
+        baseView.layer.cornerRadius = 10
         verse.font = Pretendard.regular.dynamicFont(style: .callout)
         verse.numberOfLines = 4
         verse.textColor = .black

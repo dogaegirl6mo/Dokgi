@@ -46,6 +46,9 @@ class PassageDetailViewModel {
     
     func saveDetail(paragraph: String, page: String, pageType: Int) {
         var verse = self.detailPassage.value
+        if let savedVerses = UserDefaults.standard.array(forKey: UserDefaultsKeys.shuffledPassage.rawValue) as? [String] {
+              UserDefaults.standard.set(savedVerses.map{ $0 == verse.passage ? paragraph : $0}, forKey: UserDefaultsKeys.shuffledPassage.rawValue)
+            }
         verse.passage = paragraph
         verse.keywords = keywords.value.filter{ $0 != "" }
         verse.pageType = pageType == 0 ? true : false
